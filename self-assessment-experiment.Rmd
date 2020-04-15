@@ -1,9 +1,15 @@
 ---
 title: "Self-assessment experiment data analysis"
 author: "Carlos Granell"
-data: "15/04/2020 updated(`r format(Sys.time(), '%d %B, %Y')`)"
-output: html_notebook
+date: "15/04/2020 (updated `r format(Sys.time(), '%d %B, %Y')`)"
+output:
+  html_document:
+    df_print: paged
 ---
+
+```{r setup, include=FALSE, eval=FALSE}
+knitr::opts_chunk$set(echo=FALSE)
+```
 
 
 This document analyses the pre- and post- (soon) questionnaires as part of the experiment **Reproducibility of GIScience MSc Theses - Self-assessment experiment** - see [OSF project](https://osf.io/j97zp/)
@@ -29,7 +35,6 @@ You can run the script `install.R` to install all required dependencies on a new
 source("install.R")
 ```
 
-The plots and tables of survey data and evaluation use the packages [`ggplot2`](http://ggplot2.tidyverse.org/), [`knitr::kable()`](https://yihui.name/knitr/), [`huxtable`](https://hughjonesd.github.io/huxtable/), and [`kableExtra`](https://cran.r-project.org/package=kableExtra).
 Required libraries and runtime environment description are as follows.
 
 ```{r load_libraries, echo=TRUE, message=FALSE, warning=FALSE}
@@ -41,11 +46,13 @@ library("tidyverse")
 # library("grid")
 # library("gridBase")
 # library("gridExtra")
-# library("kableExtra")
+library("kableExtra")
 # library("huxtable")
 library("here")
 library("googlesheets4")
+library("likert")
 ```
+
 
 ```{r set_seed}
 # just in case
@@ -56,33 +63,140 @@ set.seed(nchar("Self-assessment experiment"))
 ## Download raw survey data
 
 
-## Reproduciblity assessment
-
 ```{r pretestdata_file}
 pretest_file <- here::here("data-raw", "pre-test.csv")
 ```
 
-```{r pretestdata_download, echo=FALSE, eval=FALSE}
+```{r pretestdata_download, eval=FALSE}
 
-
-retest_url <- ""
-
-pretest_sheet <- read_sheet("https://drive.google.com/open?id=1YhcOeTg04AXh7mbDzjqefuuHUG91sr98e15rl92M2Zk")
-
+pretest_sheet <- googlesheets4::read_sheet("https://drive.google.com/open?id=1YhcOeTg04AXh7mbDzjqefuuHUG91sr98e15rl92M2Zk")
 
 pretest_sheet <- 
   pretest_sheet %>%
   filter(`Please choose your MASTER programme` %in% c("MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)",
                                                       "MSc Geomatics Master (TU Delft)"))
 
-write.csv(petest_sheet, file = pretest_file, append = FALSE)
+write.csv(pretest_sheet, file = pretest_file)
 
 ```
+
+## Pre-test assessment 
 
 The following plots are based on the file `r pretest_file`, filtered to _MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)_ and _MSc Geomatics (TU Delft)_.
 
-```{r load_evaldata,warning=FALSE}
+```{r load_evaldata, warning=FALSE}
+
+pretest_data <- read_csv(pretest_file, col_names = TRUE, trim_ws=TRUE, 
+                       col_types = cols(.default = col_character()),
+                       na = "NA")
+
+names(pretest_data) <- names(pretest_data) %>% 
+  sub(pattern = "Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them\\? \\[*", replacement = "") %>% 
+  sub(pattern = "\\]", replacement = "")
+
+# Terms organised according to the five "schools of thoughts"
+# cher & Friesike (2014). Open Science: One Term, Five Schools of Thought. https://doi.org/10.1007/978-3-319-00026-8_2
+terms <- tibble(
+  school = c(rep("democratic", 6), rep("pragmatic", 5), rep("infrastruture", 4), rep("public", 3)),
+  column = names(pretest_data)[8:25]
+)
 
 ```
+
+```{r pretestdata_to_likert}
+
+likert_levels <- c("I have never heard of this term",
+                   "I have heard this term before, but I have a vague idea of what it is",
+                   "I am familiar with the term but it would be difficult to explain it",
+                   "I can explain this term in my own words but I do not use it myself",
+                   "I can easily define what exactly this term means and I use it myself")
+
+likert_factor <- function(x) {factor(x, levels = likert_levels)}
+
+pretest_data <- 
+  pretest_data %>%
+  # drop_na() %>%
+  mutate_at(pull(terms, column), likert_factor) %>%
+  select(-X1)
+
+```
+
+
+
+### MSc in Geospatial Technologies  (UJI, NOVA IMS, IFGI-WWU)
+
+```{r pretest_geotec_stats}
+
+pretest_geotech <- 
+  pretest_data %>%
+  filter(`Please choose your MASTER programme` == c("MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)"))
+
+n_participants <- nrow(pretest_geotech)
+n_trained <- nrow(pretest_geotech %>% filter(`Have you ever been TRAINED on reproducible research practices?` == "YES"))
+```
+
+`r n_participants` students answered the pre-questionnaire. 
+
+#### Section 1: previous knowledge/experience on reproducible research
+
+`r n_trained` students have been previously trained on reproducible research practices.
+
+```{r pretest_geotech_terms}
+results <- 
+  pretest_geotech %>%
+  select(pull(terms, column)) %>%
+  as.data.frame() %>%
+  likert()
+
+summaries <- 
+  summary(results) %>%
+  inner_join(terms, by=c("Item" ="column")) %>%
+  select(school, Item, low, neutral, high, mean, sd)
+```
+
+```{r pretest_geotech_terms_table}
+kable(summaries,
+      digits = 2,
+      row.names = FALSE,
+      col.names = c("school of thought", "Term", "low (%)", "neutral (%)", "high (%)", "mean", "sd"),
+      format = "html",
+      booktabs = TRUE,
+      caption = paste0("Percentage of answers in the disagree (low), agree (high) or neutral categories.\n",
+                       "Mean response with standard deviation using numeric values 1 to 5 for Strongly disagree to Strongly agree.\n",
+                       "Terms are ordered by 'high' category.")) %>%
+      kable_styling(full_width = TRUE)
+```
+
+
+```{r eval=FALSE}
+democratic_cols <- filter(terms, school =="democratic") %>% select(column) %>% pull()
+
+democratic_results <- 
+  pretest_geotech %>%
+  select(democratic_cols) %>%
+  as.data.frame() %>%
+  likert()
+
+```
+
+
+```{r fig_likert_terms, fig.width=15, fig.height=10, dpi=300}
+plot(results, type="bar", legend = "", legend.position = "bottom",
+     low.color = "goldenrod2", high.color="indianred4") +
+  ggtitle(paste0("How well do you KNOW these terms? (N=", n_participants, ")")) + 
+  theme_bw()
+
+
+```
+
+
+#### Section 2: current working practices
+
+
+#### Section 3: Previous education background/ work experience/...
+
+ 
+
+### MSc Geomatics (TU Delft) 
 
 
