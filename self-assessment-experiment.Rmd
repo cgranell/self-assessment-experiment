@@ -1,0 +1,88 @@
+---
+title: "Self-assessment experiment data analysis"
+author: "Carlos Granell"
+data: "15/04/2020 updated(`r format(Sys.time(), '%d %B, %Y')`)"
+output: html_notebook
+---
+
+
+This document analyses the pre- and post- (soon) questionnaires as part of the experiment **Reproducibility of GIScience MSc Theses - Self-assessment experiment** - see [OSF project](https://osf.io/j97zp/)
+
+
+## Reproduce paper
+
+To create the PDF of the computational notebook you can run the following commands in a new R session.
+If you have problems rendering the PDF you can execute each chunk independently in [RStudio](https://rstudio.com/products/rstudio/).
+
+```{r render_with_rmarkdown, eval=FALSE}
+require("knitr")
+require("rmarkdown")
+rmarkdown::render("self-assessment-experiment.Rmd", output_format = "pdf_document")
+```
+
+## Software dependencies and code
+
+This document does not install the required R packages by default.
+You can run the script `install.R` to install all required dependencies on a new R installation, or use `install.packages(..)` to install missing R packages.
+
+```{r install_r, eval=FALSE}
+source("install.R")
+```
+
+The plots and tables of survey data and evaluation use the packages [`ggplot2`](http://ggplot2.tidyverse.org/), [`knitr::kable()`](https://yihui.name/knitr/), [`huxtable`](https://hughjonesd.github.io/huxtable/), and [`kableExtra`](https://cran.r-project.org/package=kableExtra).
+Required libraries and runtime environment description are as follows.
+
+```{r load_libraries, echo=TRUE, message=FALSE, warning=FALSE}
+library("tidyverse")
+# library("readr")
+# library("ggplot2")
+# library("reshape2")
+# library("ggthemes")
+# library("grid")
+# library("gridBase")
+# library("gridExtra")
+# library("kableExtra")
+# library("huxtable")
+library("here")
+library("googlesheets4")
+```
+
+```{r set_seed}
+# just in case
+set.seed(nchar("Self-assessment experiment"))
+```
+
+
+## Download raw survey data
+
+
+## Reproduciblity assessment
+
+```{r pretestdata_file}
+pretest_file <- here::here("data-raw", "pre-test.csv")
+```
+
+```{r pretestdata_download, echo=FALSE, eval=FALSE}
+
+
+retest_url <- ""
+
+pretest_sheet <- read_sheet("https://drive.google.com/open?id=1YhcOeTg04AXh7mbDzjqefuuHUG91sr98e15rl92M2Zk")
+
+
+pretest_sheet <- 
+  pretest_sheet %>%
+  filter(`Please choose your MASTER programme` %in% c("MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)",
+                                                      "MSc Geomatics Master (TU Delft)"))
+
+write.csv(petest_sheet, file = pretest_file, append = FALSE)
+
+```
+
+The following plots are based on the file `r pretest_file`, filtered to _MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)_ and _MSc Geomatics (TU Delft)_.
+
+```{r load_evaldata,warning=FALSE}
+
+```
+
+
