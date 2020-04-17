@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo=FALSE)
 ```
 
 
-This document analyses the pre- and post- (soon) questionnaires as part of the experiment **Reproducibility of GIScience MSc Theses - Self-assessment experiment** - see [OSF project](https://osf.io/j97zp/)
+This document analyses the responses of a [pre-questionnaire](https://forms.gle/BTmPc5ExhEJNkUtFA) and (soon) a post-questionnaire as part of the experiment **Reproducibility of GIScience MSc Theses - Self-assessment experiment** - see [OSF project](https://osf.io/j97zp/)
 
 
 ## Reproduce paper
@@ -158,11 +158,11 @@ summaries <-
 kable(summaries,
       digits = 2,
       row.names = FALSE,
-      col.names = c("school of thought", "Term", "low (%)", "neutral (%)", "high (%)", "mean", "sd"),
+      col.names = c("School of thought", "Term", "low (%)", "neutral (%)", "high (%)", "mean", "sd"),
       format = "html",
       booktabs = TRUE,
       caption = paste0("Percentage of answers in the disagree (low), agree (high) or neutral categories.\n",
-                       "Mean response with standard deviation using numeric values 1 to 5 for Strongly disagree to Strongly agree.\n",
+                       "Mean response with standard deviation using numeric values 1 to 5 for 'Strongly disagree' to 'Strongly agree'.\n",
                        "Terms are ordered by 'high' category.")) %>%
       kable_styling(full_width = TRUE)
 ```
@@ -190,7 +190,90 @@ plot(results, type="bar", legend = "", legend.position = "bottom",
 ```
 
 
-#### Section 2: current working practices
+
+```{r pretest_geotech_perception}
+yesno_levels <- c("YES", "NO")
+percepcion_levels <- c("1", "2", "3", "4", "5")
+
+pretest_geotech <- 
+  pretest_geotech %>%
+  mutate(`Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?` = factor(`Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`, levels = yesno_levels),
+         `Have you ever had to REUSE YOUR OWN past code/data?` = factor(`Have you ever had to REUSE YOUR OWN past code/data?`, levels = yesno_levels),
+         `Please rate the perceived IMPORTANCE of doing your research in a reproducible way` = factor(`Please rate the perceived IMPORTANCE of doing your research in a reproducible way`, levels = percepcion_levels))
+```
+
+
+```{r pretest_geotech_perception_table}
+options(knitr.kable.NA = '-')
+kable(pretest_geotech %>% 
+      select(`Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`,
+             `Have you ever had to REUSE YOUR OWN past code/data?`,
+             `If you answered YES in either of the last two questions, please explain which were the MAIN DIFFICULTIES you experienced. If NO, skip question`,
+             `Do you know where to look for HELP and extra information to make your research reproducible?`,
+             `Please rate the perceived IMPORTANCE of doing your research in a reproducible way`,
+             `According to you, why is it IMPORTANT (or not) to do your research in a reproducible way?`),
+      booktabs = TRUE,
+      caption = paste0("Previous experience in reproducibility, main difficulties and perceived importance, \n",
+                        "using numeric values 1 to 5 for 'No important at all' to 'Really important'.")) %>%
+  kable_styling(full_width = TRUE, latex_options = "scale_down")
+  
+```
+
+
+#### Section 2: Current working practices
+
+```{r pretest_geotech_working_practices}
+questions_practices <- 
+  c("analysis" = "What tools do you plan to use to ANALYSE data?",
+    "visualisation" = "What tools do you plan to use to VISUALISE/PLOT data?",
+    "writing" = "What tools do you plan to WRITE UP your master thesis or conference/journal article?")
+
+
+working_practices <- 
+  pretest_geotech %>%
+  select(analysis = `What tools do you plan to use to ANALYSE data?`,
+         visualisation = `What tools do you plan to use to VISUALISE/PLOT data?`,
+        writing = `What tools do you plan to WRITE UP your master thesis or conference/journal article?`) %>%
+  separate_rows(everything(), sep = "\\),") %>%   # But ")" is also gone..
+  mutate_all(stringr::str_trim())
+
+
+           # colname = if_else(str_sub(colname, -1) == ")", colname, paste0(colname, ")")))
+
+
+
+practices <- function(data, colname) {
+  data %>%
+    select(colname) %>%
+    separate_rows(colname, sep = "\\),") %>%   # But ")" is also gone..
+    mutate(colname = stringr::str_trim(colname))#,
+           # colname = if_else(str_sub(colname, -1) == ")", colname, paste0(colname, ")")))
+}
+
+analysis <-
+  pretest_geotech %>%
+    select(practice = questions_practices[[1]]) %>%
+    separate_rows(practice, sep = "\\),") %>% 
+    mutate(practice = stringr::str_trim(practice),
+           practice = if_else(str_sub(practice, -1) == ")", practice, paste0(practice, ")")))
+
+
+```
+
+
+```{r Fig_practices,dpi300}
+# match the colours to plot below
+colours <- RColorBrewer::brewer.pal(length(working_practices), "Set1")
+
+
+ggplot(analysis, aes(x=practice)) +
+    geom_bar(fill=colours[q]) +
+    coord_flip() +
+    labs(title = names(questions_practices[1]))
+
+  
+```
+
 
 
 #### Section 3: Previous education background/ work experience/...
