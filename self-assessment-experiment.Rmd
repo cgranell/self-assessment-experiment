@@ -7,7 +7,7 @@ output:
     df_print: paged
 ---
 
-```{r setup, include=FALSE, eval=FALSE}
+```{r setup, include=FALSE, eval=TRUE}
 knitr::opts_chunk$set(echo=FALSE)
 ```
 
@@ -39,15 +39,8 @@ Required libraries and runtime environment description are as follows.
 
 ```{r load_libraries, echo=TRUE, message=FALSE, warning=FALSE}
 library("tidyverse")
-# library("readr")
-# library("ggplot2")
-# library("reshape2")
-# library("ggthemes")
-# library("grid")
-# library("gridBase")
-# library("gridExtra")
+library("forcats")
 library("kableExtra")
-# library("huxtable")
 library("here")
 library("googlesheets4")
 library("likert")
@@ -82,7 +75,7 @@ write.csv(pretest_sheet, file = pretest_file)
 
 ## Pre-test assessment 
 
-The following plots are based on the file `r pretest_file`, filtered to _MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)_ and _MSc Geomatics (TU Delft)_.
+The following plots are based on the file `r pretest_file`, filtered by students from _MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)_ and _MSc Geomatics (TU Delft)_.
 
 ```{r load_evaldata, warning=FALSE}
 
@@ -223,63 +216,71 @@ kable(pretest_geotech %>%
 #### Section 2: Current working practices
 
 ```{r pretest_geotech_working_practices}
-questions_practices <- 
-  c("analysis" = "What tools do you plan to use to ANALYSE data?",
-    "visualisation" = "What tools do you plan to use to VISUALISE/PLOT data?",
-    "writing" = "What tools do you plan to WRITE UP your master thesis or conference/journal article?")
-
-
-working_practices <- 
-  pretest_geotech %>%
-  select(analysis = `What tools do you plan to use to ANALYSE data?`,
-         visualisation = `What tools do you plan to use to VISUALISE/PLOT data?`,
-        writing = `What tools do you plan to WRITE UP your master thesis or conference/journal article?`) %>%
-  separate_rows(everything(), sep = "\\),") %>%   # But ")" is also gone..
-  mutate_all(stringr::str_trim())
-
-
-           # colname = if_else(str_sub(colname, -1) == ")", colname, paste0(colname, ")")))
+questions_practices <- tibble(
+  analysis = c("What tools do you plan to use to ANALYSE data?"),
+  visualisation =c("What tools do you plan to use to VISUALISE/PLOT data?"),
+  writing = c("What tools do you plan to WRITE UP your master thesis or conference/journal article?"),
+  workflow = c("What is your (expected) process of GETTING the summary data, statistical results, figures, maps and tables IN your master thesis document (or conference/journal article)?"))
 
 
 
-practices <- function(data, colname) {
+practices <- function(data, group) {
   data %>%
-    select(colname) %>%
-    separate_rows(colname, sep = "\\),") %>%   # But ")" is also gone..
-    mutate(colname = stringr::str_trim(colname))#,
-           # colname = if_else(str_sub(colname, -1) == ")", colname, paste0(colname, ")")))
+    separate_rows(practice, sep = "\\),") %>%   # But ")" is also gone..
+    mutate(practice = stringr::str_trim(practice),
+           practice = if_else(str_sub(practice, -1) == ")", practice, paste0(practice, ")"))) %>%
+    add_column(practice_group=group)
 }
 
-analysis <-
-  pretest_geotech %>%
-    select(practice = questions_practices[[1]]) %>%
-    separate_rows(practice, sep = "\\),") %>% 
-    mutate(practice = stringr::str_trim(practice),
-           practice = if_else(str_sub(practice, -1) == ")", practice, paste0(practice, ")")))
 
+working_practices <- data.frame()
+for (q in 1:length(questions_practices)) {
+  res <- practices(select(pretest_geotech, practice = questions_practices[[q]]), names(questions_practices)[q])
+  working_practices <- bind_rows(working_practices, res)
+}
+
+
+
+kable(t(questions_practices),
+      col.names = c("Practice group - Survey question"), 
+      format = "html",
+      booktabs = TRUE,
+      caption = paste0("Note that responses to 'working practices' were multi-choice (N=", n_participants, ").")) %>%
+  kable_styling(full_width = TRUE)
+```
+
+```{r Fig_practices,fig.width=15, dpi=300}
+
+ggplot(working_practices, aes(x=forcats::fct_infreq(practice))) +
+    geom_bar(aes(fill=factor(practice_group))) +
+    coord_flip() +
+    labs(title = "What tools do you plan to use to...?") +
+    facet_grid(rows = vars(practice_group), scales = "free_y") +
+    guides(fill= FALSE) +
+    theme_bw()
 
 ```
 
 
-```{r Fig_practices,dpi300}
-# match the colours to plot below
-colours <- RColorBrewer::brewer.pal(length(working_practices), "Set1")
+
+#### Section 3: Previous education background / work experience /...
 
 
-ggplot(analysis, aes(x=practice)) +
-    geom_bar(fill=colours[q]) +
-    coord_flip() +
-    labs(title = names(questions_practices[1]))
-
+```{r pretest_geotech_backgroubd_table}
+# options(knitr.kable.NA = '-')
+kable(pretest_geotech %>% 
+      select(`What BACHELOR DEGREE (or equivalent) did you have when applying for the master programme?`,
+             `How many years of PROFESSIONAL EXPERIENCE did you have when applying for the master programme?`,
+             `How many years of PROFESSIONAL EXPERIENCE did you have when applying for the master programme?`,
+             `In which context are you DEVELOPING your master thesis?`,
+             `Please select which sentence better describes the PLAN you have after the completion of your Master thesis`),
+      booktabs = TRUE,
+      caption = "Previous education backgroudn and work experience, adn prospecet for future.") %>%
+  kable_styling(full_width = TRUE, latex_options = "scale_down")
   
 ```
 
 
-
-#### Section 3: Previous education background/ work experience/...
-
- 
-
 ### MSc Geomatics (TU Delft) 
 
-
+**TODO**
