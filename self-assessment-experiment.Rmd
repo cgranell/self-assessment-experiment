@@ -55,28 +55,44 @@ set.seed(nchar("Self-assessment experiment"))
 
 ## Download raw survey data
 
+Students who did not belong to the self-assessment experiment are filtered, and fields that refer to personal information (email, thesis handle, and url to pdf file) are removed and therefore, are not used in the analysis.
+
 
 ```{r pretestdata_file}
-pretest_file <- here::here("data-raw", "pre-test.csv")
+pretest_file <- here::here("data-raw", "pre_test.csv")
 
+dissertation_file <- here::here("data-raw", "theses_2020_geotech.csv")
 
 ```
 
-```{r pretestdata_download, eval=FALSE}
-
+```{r pretestdata_download}
 pretest_sheet <- googlesheets4::read_sheet("https://drive.google.com/open?id=1YhcOeTg04AXh7mbDzjqefuuHUG91sr98e15rl92M2Zk")
 
 geotech_theses <- googlesheets4::read_sheet("https://drive.google.com/open?id=1a51epnQviXJhLLuKu5Gn6m_hqv4NnMzNLNlt_gQcqCE")
-# TODO:  Create new fies for self-assessment sentence. Drop personal data (email, hanler, pdf) and add id from pretest_sheet, referneces 
+```
 
-pretest_sheet <- 
+
+```{r pretestdata_filtered}
+pretest_sheet_filtered <- 
   pretest_sheet %>%
   filter(`Please choose your MASTER programme` %in% c("MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)",
-                                                      "MSc Geomatics Master (TU Delft)"))
-# TODO: drop personal data (email)
-write.csv(pretest_sheet, file = pretest_file)
+                                                      "MSc Geomatics Master (TU Delft)")) %>%
+  mutate(id = row_number()) %>%
+  rename(email = `Please introduce your university E-MAIL address`) %>%
+  left_join(geotech_theses, by="email") %>%
+  select(-email, -handle, -url_pdf)
+
+n_answered_no <- nrow(anti_join(geotech_theses, pretest_sheet_filtered))
+n_answered_yes <- nrow(geotech_theses) - n_answered_no 
+
+write.csv(pretest_sheet_filtered, file = pretest_file)
 
 ```
+
+`r n_answered_yes` students (EM Master Geotech) added the self-assessment statement (to the thesis manuscript) and answered the pre-questionnaire. Self-assessment statements are added to the analysis.
+
+`r n_answered_no` students (EM Master Geotech) added the self-assessment statement but _did not_ answered the pre-questionnaire. These two cases are omitted from the analysis.
+
 
 ## Pre-test assessment 
 
@@ -96,7 +112,7 @@ names(pretest_data) <- names(pretest_data) %>%
 # cher & Friesike (2014). Open Science: One Term, Five Schools of Thought. https://doi.org/10.1007/978-3-319-00026-8_2
 terms <- tibble(
   school = c(rep("democratic", 6), rep("pragmatic", 5), rep("infrastruture", 4), rep("public", 3)),
-  column = names(pretest_data)[8:25]
+  column = names(pretest_data)[7:24]
 )
 
 ```

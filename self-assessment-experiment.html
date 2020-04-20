@@ -1656,7 +1656,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Self-assessment experiment data analysis</h1>
 <h4 class="author">Carlos Granell</h4>
-<h4 class="date">15/04/2020 (updated 17 abril, 2020)</h4>
+<h4 class="date">15/04/2020 (updated 20 abril, 2020)</h4>
 
 </div>
 
@@ -1679,10 +1679,23 @@ library(&quot;likert&quot;)</code></pre>
 </div>
 <div id="download-raw-survey-data" class="section level2">
 <h2>Download raw survey data</h2>
+<p>Students who did not belong to the self-assessment experiment are filtered, and fields that refer to personal information (email, thesis handle, and url to pdf file) are removed and therefore, are not used in the analysis.</p>
+<pre><code>## Using an auto-discovered, cached token.
+## To suppress this message, modify your code or options to clearly consent to the use of a cached token.
+## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:
+## https://gargle.r-lib.org/articles/non-interactive-auth.html
+## The googlesheets4 package is using a cached token for canut@uji.es.</code></pre>
+<pre><code>## Reading from &#39;Self-assessment_Reproducibility_Pre-questionnaire (Responses)&#39;</code></pre>
+<pre><code>## </code></pre>
+<pre><code>## Reading from &#39;geotech_masterthesis_2020&#39;</code></pre>
+<pre><code>## </code></pre>
+<pre><code>## Joining, by = c(&quot;input_data&quot;, &quot;preprocessing&quot;, &quot;methods&quot;, &quot;computational_environment&quot;, &quot;results&quot;)</code></pre>
+<p>13 students (EM Master Geotech) added the self-assessment statement (to the thesis manuscript) and answered the pre-questionnaire. Self-assessment statements are added to the analysis.</p>
+<p>2 students (EM Master Geotech) added the self-assessment statement but <em>did not</em> answered the pre-questionnaire. These two cases are omitted from the analysis.</p>
 </div>
 <div id="pre-test-assessment" class="section level2">
 <h2>Pre-test assessment</h2>
-<p>The following plots are based on the file C:/MyCode/self-assessment-experiment/data-raw/pre-test.csv, filtered by students from <em>MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)</em> and <em>MSc Geomatics (TU Delft)</em>.</p>
+<p>The following plots are based on the file C:/MyCode/self-assessment-experiment/data-raw/pre_test.csv, filtered by students from <em>MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)</em> and <em>MSc Geomatics (TU Delft)</em>.</p>
 <div id="msc-in-geospatial-technologies-uji-nova-ims-ifgi-wwu" class="section level3">
 <h3>MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)</h3>
 <p>13 students answered the pre-questionnaire.</p>
