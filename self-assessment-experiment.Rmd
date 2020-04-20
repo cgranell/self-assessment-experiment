@@ -58,17 +58,22 @@ set.seed(nchar("Self-assessment experiment"))
 
 ```{r pretestdata_file}
 pretest_file <- here::here("data-raw", "pre-test.csv")
+
+
 ```
 
 ```{r pretestdata_download, eval=FALSE}
 
 pretest_sheet <- googlesheets4::read_sheet("https://drive.google.com/open?id=1YhcOeTg04AXh7mbDzjqefuuHUG91sr98e15rl92M2Zk")
 
+geotech_theses <- googlesheets4::read_sheet("https://drive.google.com/open?id=1a51epnQviXJhLLuKu5Gn6m_hqv4NnMzNLNlt_gQcqCE")
+# TODO:  Create new fies for self-assessment sentence. Drop personal data (email, hanler, pdf) and add id from pretest_sheet, referneces 
+
 pretest_sheet <- 
   pretest_sheet %>%
   filter(`Please choose your MASTER programme` %in% c("MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)",
                                                       "MSc Geomatics Master (TU Delft)"))
-
+# TODO: drop personal data (email)
 write.csv(pretest_sheet, file = pretest_file)
 
 ```
