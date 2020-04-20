@@ -89,9 +89,11 @@ write.csv(pretest_sheet_filtered, file = pretest_file)
 
 ```
 
-`r n_answered_yes` students (EM Master Geotech) added the self-assessment statement (to the thesis manuscript) and answered the pre-questionnaire. Self-assessment statements are added to the analysis.
+`r format((nrow(geotech_theses) / 24)*100, 0)`% (`r nrow(geotech_theses)`/24) of students (EM Master Geotech) provided a self-assessment statement:
 
-`r n_answered_no` students (EM Master Geotech) added the self-assessment statement but _did not_ answered the pre-questionnaire. These two cases are omitted from the analysis.
+- `r n_answered_yes` added the self-assessment statement (to the thesis manuscript) and answered the pre-questionnaire. Self-assessment statements are added to the analysis.
+
+- `r n_answered_no` added the self-assessment statement but _did not_ answered the pre-questionnaire. These two cases are omitted from the analysis.
 
 
 ## Pre-test assessment 
