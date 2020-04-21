@@ -102,8 +102,16 @@ The following plots are based on the file `r pretest_file`, filtered by students
 
 ```{r load_evaldata, warning=FALSE}
 
+category_levels <- c("0", "1", "2", "3")
+
 pretest_data <- read_csv(pretest_file, col_names = TRUE, trim_ws=TRUE, 
-                       col_types = cols(.default = col_character()),
+                       col_types = cols(
+                         .default = col_character(),
+                         input_data = col_factor(levels = category_levels),
+                         preprocessing = col_factor(levels = category_levels),
+                         methods = col_factor(levels = category_levels),
+                         computational_environment = col_factor(levels = category_levels),
+                         results = col_factor(levels = category_levels)),
                        na = "NA")
 
 names(pretest_data) <- names(pretest_data) %>% 
@@ -299,8 +307,42 @@ kable(pretest_geotech %>%
              `Please select which sentence better describes the PLAN you have after the completion of your Master thesis`),
       booktabs = TRUE,
       caption = "Previous education backgroudn and work experience, adn prospecet for future.") %>%
-  kable_styling(full_width = TRUE, latex_options = "scale_down")
+  kable_styling(full_width = TRUE)
   
+```
+
+#### Results of self-assessment reproducibility
+
+```{r fig_selfasses, fig.width=10}
+# match the colours to time series plot below
+categoryColumns <- c("input_data", 
+                     "preprocessing",
+                     "methods",
+                     "computational_environment",
+                     "results")
+colours <- RColorBrewer::brewer.pal(length(categoryColumns), "Set1")
+
+level_names <- c("0", "1", "2", "3", "NA")
+criteriaBarplot = function(data, main, colour) {
+  barplot(table(data, useNA = "always"), 
+          main = main,
+          xlab = "Level", 
+          ylim = c(0,25),
+          names.arg = level_names,col = colours[colour])
+}
+
+par(mfrow = c(1,length(categoryColumns)))
+
+criteriaBarplot(pretest_geotech$input_data,
+                main = "A: Input data", colour = 1)
+criteriaBarplot(pretest_geotech$preprocessing,
+                main = "B: Preprocessing", colour = 2)
+criteriaBarplot(pretest_geotech$methods,
+                main = "C: Methods/Analysis/\nProcessing", colour = 3)
+criteriaBarplot(pretest_geotech$computational_environment,
+                main = "D: Computational\nEnvironment", colour = 4)
+criteriaBarplot(pretest_geotech$results,
+                main = "E: Results", colour = 5)
 ```
 
 
