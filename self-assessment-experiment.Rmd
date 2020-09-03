@@ -1,22 +1,24 @@
 ---
 title: "Reproducibility of GIScience MSc Theses - Self-assessment experiment"
-author: 
-  - name: "Carlos Granell"
+author:
+  - name: Carlos Granell
     affiliation: Universitat Juame I of Castellón, Spain
 date: "15/04/2020 (updated `r format(Sys.time(), '%d %B, %Y')`)"
-abstract: |
-  This document analyses the responses to a pre-questionnaire and post-questionnaire in the framework of an experiment on the [self-assesment of reproducibility level of master's thesis in GIScience](https://osf.io/j97zp/) carried out during the academic year 2019/20 with master's students enrolled in two GIS-related master's programmes: [Erasmus Master MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). This initial experiment attempts to explore teaching strategies to increase the exposure to and understanding of Reproducible Research by master-level students in the area of GIScience.
-
 output:
   html_document:
     df_print: paged
-    toc: yes
-    toc_float: true
-    toc_depth: 4
-    number_sections: true
+    number_sections: yes
     theme: readable
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
   word_document:
     toc: yes
+abstract: |
+  This document analyses the responses to a pre-questionnaire and post-questionnaire in the framework of an experiment on the [self-assesment of reproducibility level of master's thesis in GIScience](https://osf.io/j97zp/) carried out during the academic year 2019/20 with master's students enrolled in two GIS-related master's programmes: [Erasmus Master MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). This initial experiment attempts to explore teaching strategies to increase the exposure to and understanding of Reproducible Research by master-level students in the area of GIScience.
 urlcolor: blue
 ---
 
@@ -68,9 +70,9 @@ rmarkdown::render("self-assessment-experiment.Rmd", output_format = "pdf_documen
 
 ## Participants
 
-Eligible participants were initially all students enrolled in the Master Thesis Project in the academic year 2019/2020 from two GIS-related master programmes:[Erasmus Master MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). The former is offered by three universities (UJI, NOVA IMS Lisboa and Münster), the latter by TU Delft.  
+Eligible participants were initially all students enrolled in the Master Thesis Project in the academic year 2019/2020 from two GIS-related master programmes:[Erasmus Master MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). The former is offered by three universities (UJI, NOVA IMS Lisboa and Münster), the latter by TU Delft. As participation was voluntary, the experiment was not counted towards the final grade of the master's thesis.
 
-Students who answered the questionnaires but were not enrolled in the master programmes above (e.g., PhD students who also answered the questionnaires as participants in a doctoral course at UJI) were removed from the analysis. Fields that refer to personal information (email, thesis handlers, url to pdf files) were also removed and therefore not used in the analysis.
+Students who also answered the questionnaires but were not enrolled in the master programmes above (e.g., PhD students who participated in a doctoral course at UJI) were removed from the analysis. Fields that refer to personal information (email, thesis handlers, url to pdf files) were also removed and therefore not used in the analysis.
 
 
 ```{r pretestdata_files}
@@ -117,21 +119,21 @@ write.csv(selfassessment_sheet, file = selfassessment_file)
 
 ## Methodological steps
 
-A brief summary of the steps follows are described below. Additional notes are also [available](https://docs.google.com/document/d/1Ev5Q2fbzrv8PQxMC9nDBUYy73AqrvZOaT3uRjAkvWIU/edit?usp=sharing)
+A brief summary of the steps follows are described below. Additional notes are also [available](https://docs.google.com/document/d/1Ev5Q2fbzrv8PQxMC9nDBUYy73AqrvZOaT3uRjAkvWIU/edit?usp=sharing).
 
-- Step 1. Participants answered the [first questionnaire](https://forms.gle/BTmPc5ExhEJNkUtFA) (per-test assessment) at the start of the semester (or course).
+- Step 1. Participants answered the [first questionnaire](https://forms.gle/BTmPc5ExhEJNkUtFA) (per-test assessment) at the start of the semester (or master thesis project/course).
 
-- Step 2. In the [OSF web site](https://osf.io/j97zp/), participatns found an [introductory 5-minute video lecture](https://osf.io/pnw2q/) to the experiment and [20-minute video lecture to the topic of reproducibility](https://osf.io/f756x/). 
+- Step 2. In the [OSF web site](https://osf.io/j97zp/), participants were provided with  an [introductory 5-minute video lecture](https://osf.io/pnw2q/) to the experiment and [20-minute video lecture to the topic of reproducibility](https://osf.io/f756x/). 
 
-- Step 3. In the same [web site](https://osf.io/j97zp/), participats also found 3 self-study, self-paced assignments (in PDF format) to introduce you to the methods and tools for reproducibility research. In case of questions, we also setup a GitHub repo as a [discussion service](https://github.com/erasmus-mundus-geotech-master/reproducibility-self-assessment) to allow all students to discuss questions with regard to the assignments and the reproducibility self-assessment of their theses.
+- Step 3. In the same [web site](https://osf.io/j97zp/), participats also were given 3 self-study, self-paced assignments (in PDF format) to introduce them to the methods and tools for reproducibility research. To suport them, we also setup a GitHub repo as a [discussion service](https://github.com/erasmus-mundus-geotech-master/reproducibility-self-assessment) to allow all students to discuss questions with regard to the assignments and the reproducibility self-assessment of their theses.
 
-- Step 4. Participants were asked to self-assess the level of reproducibility of their master theses, as explained in the first video lecture. In practice, it meant to add a simple statement (last line) to the abstract indicating the level of each of the [five criteria](https://doi.org/10.7717/peerj.5072). 
+- Step 4. Participants were asked to self-assess the level of reproducibility of their master theses, as explained in the first video lecture. In practice, it meant to add a simple statement (last line) to the abstract indicating the level (score) of each of the [five criteria](https://doi.org/10.7717/peerj.5072). 
 
-- Step 5. At the end of the semester (or course), participants answered a [second questionnaire](https://forms.gle/KCD5Ym4VJRmZzZqNA) (post-test assessment).
+- Step 5. At the end of the semester (or master thesis project/course), participants answered a [second questionnaire](https://forms.gle/KCD5Ym4VJRmZzZqNA) (post-test assessment).
 
 ## Questionnaires
 
-[Description of the pre- and post-questionnaire](https://docs.google.com/document/d/1n9MJVsP6xZ61UW7vlXwttzZeFbgSchBOpMDgYlIiQis/edit)
+TODO: [Description of the pre- and post-questionnaire](https://docs.google.com/document/d/1n9MJVsP6xZ61UW7vlXwttzZeFbgSchBOpMDgYlIiQis/edit)
 
 ## Training materials 
 
@@ -146,7 +148,7 @@ Training materials developed for the experiment are publicly available in the OS
 
 # Analysis
 
-The following plots are based on the file `r pretest_filtered_filename` in the folder `data`. Only students from _MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)_ and _MSc Geomatics (TU Delft)_ are analysed.
+The following plots and tables are based on the file `r pretest_filtered_filename` in the folder `data`. Only students from _MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)_ and _MSc Geomatics (TU Delft)_ are analysed.
 
 ```{r evaldata_load, warning=FALSE}
 
@@ -195,13 +197,13 @@ selfassessment_data <- read_csv(
 # Terms organised according to the five "schools of thoughts"
 # cher & Friesike (2014). Open Science: One Term, Five Schools of Thought. https://doi.org/10.1007/978-3-319-00026-8_2
 terms <- tibble(
-  school = c(rep("democratic", 6), rep("pragmatic", 5), rep("infrastruture", 4), rep("public", 3)),
+  school = c(rep("democratic", 6), rep("pragmatic", 5), rep("infrastructure", 4), rep("public", 3)),
   column = names(pretest_data)[7:24]
 )
 
 ```
 
-## Pre-test assessment (questionnaire #1) 
+## Questionnaire #1 (pre-test) 
 
 
 ```{r pretestdata_to_likert}
@@ -222,35 +224,37 @@ pretest_data <-
 
 ```
 
-
-
 ### MSc in Geospatial Technologies  (UJI, NOVA IMS, IFGI-WWU)
 
 ```{r pretest_geotec_stats}
 
-pretest_geotech <- 
+geotech_pretest <- 
   pretest_data %>%
   filter(`Please choose your MASTER programme` == c("MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)"))
 
 # total number of students enrolled in master thesis subject in the MSc in Geospatial Technologies (2019/20) 
-total_students_geotech <- 24
-n_participants <- nrow(pretest_geotech)
-n_trained <- nrow(pretest_geotech %>% filter(`Have you ever been TRAINED on reproducible research practices?` == "YES"))
+geotech_total_students <- 24
+geotech_n_participants <- nrow(geotech_pretest)
+geotech_n_trained <- nrow(geotech_pretest %>% filter(`Have you ever been TRAINED on reproducible research practices?` == "YES"))
 
-n_did_selfassessment <- nrow(selfassessment_data)
+geotech_n_did_selfassessment <- nrow(selfassessment_data)
 
 ```
 
-- `r n_participants` students answered the pre-questionnaire. All but one added the self-assessment statement to their thesis manuscript.
+- `r geotech_total_students` students of the EM MSc in Geospatial Technologies _did_ eventually deliver the master thesis project.
 
-- `r round((n_did_selfassessment / total_students_geotech)*100, 0)`% (`r n_did_selfassessment `/`r total_students_geotech`) of students (EM Master Geotech) provided a self-assessment statement. Two of them _did not_ answered the pre-questionnaire, so they are not included in the analysis.
+- `r round((geotech_n_participants / geotech_total_students)*100, 0)`% (`r geotech_n_participants `/`r geotech_total_students`) of students answered the first questionnaire. All but one added the self-assessment statement to the thesis manuscript.
 
-- `r n_trained` (out of `r n_participants`) students answered that they have been previously trained on reproducible research practices.
+- `r round((geotech_n_did_selfassessment / geotech_total_students)*100, 0)`% (`r geotech_n_did_selfassessment `/`r geotech_total_students`) of students added a self-assessment statement to the master thesis. Two of them _did not_ answered the questionnaire #1, so they are not included in the analysis.
+
+#### Section 1: Previous knowledge/experience on reproducible research
+
+`r geotech_n_trained` (out of `r geotech_n_participants`) students answered that they have been previously trained on reproducible research practices. 
 
 
-```{r pretest_geotech_terms}
+```{r pretest_geotech_terms, warning=FALSE}
 results <- 
-  pretest_geotech %>%
+  geotech_pretest %>%
   select(pull(terms, column)) %>%
   as.data.frame() %>%
   likert()
@@ -260,6 +264,8 @@ summaries <-
   inner_join(terms, by=c("Item" ="column")) %>%
   select(school, Item, low, neutral, high, mean, sd)
 ```
+
+__Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?__
 
 ```{r pretest_geotech_terms_table}
 kable(summaries,
@@ -271,15 +277,17 @@ kable(summaries,
       caption = paste0("Percentage of answers in the disagree (low), agree (high) or neutral categories.\n",
                        "Mean response with standard deviation using numeric values 1 to 5 for 'Strongly disagree' to 'Strongly agree'.\n",
                        "Terms are ordered by 'high' category.")) %>%
-      kable_styling(full_width = TRUE)
+      kableExtra::kable_styling(full_width = TRUE) %>%
+      kableExtra::scroll_box(height = "300px")
 ```
 
+The table above and the likert-scale plot below shows the same results. Students had previous knowledge (reddish answers >= 50%) for the 9 top terms, which are `r summaries$Item[1:9]`. The next term, `r summaries$Item[10]`, is to some extent knowledgeable, as 1/3 opted for the neutral response The rest of terms, `r summaries$Item[11: length(summaries$Item)]`, are in general poorly known and/or understood. This suggests that terms closely connected to reproducibility (mostly from the _pragmatic_ School of Thought, see [Fecher & Friesike (2014)](https://www.google.com/url?q=https://doi.org/10.1007/978-3-319-00026-8_2&sa=D&ust=1599142095439000&usg=AFQjCNFbzTb1A05tFVyxUzhUXVpNyJ3P5w)) were in general unknowledgeable (yellowish answers predominate). 
 
 ```{r eval=FALSE}
 democratic_cols <- filter(terms, school =="democratic") %>% select(column) %>% pull()
 
 democratic_results <- 
-  pretest_geotech %>%
+  geotech_pretest %>%
   select(democratic_cols) %>%
   as.data.frame() %>%
   likert()
@@ -290,20 +298,19 @@ democratic_results <-
 ```{r fig_likert_terms, fig.width=15, fig.height=10, dpi=300}
 plot(results, type="bar", legend = "", legend.position = "bottom",
      low.color = "goldenrod2", high.color="indianred4") +
-  ggtitle(paste0("How well do you KNOW these terms? (N=", n_participants, ")")) + 
+  ggtitle(paste0("How well do you KNOW these terms? (N=", geotech_n_participants, ")")) + 
   theme_bw()
 
 
 ```
 
 
-
 ```{r pretest_geotech_perception}
 yesno_levels <- c("YES", "NO")
 percepcion_levels <- c("1", "2", "3", "4", "5")
 
-pretest_geotech <- 
-  pretest_geotech %>%
+geotech_pretest <- 
+  geotech_pretest %>%
   mutate(`Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?` = factor(`Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`, levels = yesno_levels),
          `Have you ever had to REUSE YOUR OWN past code/data?` = factor(`Have you ever had to REUSE YOUR OWN past code/data?`, levels = yesno_levels),
          `Please rate the perceived IMPORTANCE of doing your research in a reproducible way` = factor(`Please rate the perceived IMPORTANCE of doing your research in a reproducible way`, levels = percepcion_levels))
@@ -312,7 +319,7 @@ pretest_geotech <-
 
 ```{r pretest_geotech_perception_table}
 options(knitr.kable.NA = '-')
-kable(pretest_geotech %>% 
+kable(geotech_pretest %>% 
       select(`Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`,
              `Have you ever had to REUSE YOUR OWN past code/data?`,
              `If you answered YES in either of the last two questions, please explain which were the MAIN DIFFICULTIES you experienced. If NO, skip question`,
@@ -321,10 +328,43 @@ kable(pretest_geotech %>%
              `According to you, why is it IMPORTANT (or not) to do your research in a reproducible way?`),
       booktabs = TRUE,
       caption = paste0("Previous experience in reproducibility, main difficulties and perceived importance, \n",
-                        "using numeric values 1 to 5 for 'No important at all' to 'Really important'.")) %>%
-  kable_styling(full_width = TRUE, latex_options = "scale_down")
+                        "using numeric values 1 to 5 for 'No important at all' to 'Really important'.")) %>% 
+  kableExtra::kable_styling(full_width = TRUE) %>%
+  kableExtra::scroll_box(height = "600px")
   
 ```
+
+The plot below shows tthe numeric answer of the questionas above.
+
+```{r fig_questions_sect1, fig.width=10}
+categoryColumns <- c("Have you ever experienced DIFFICULTIES \nIN REUSING somebody else’s code / data?",
+                     "Have you ever had to REUSE \nYOUR OWN past code/data?",
+                     "Please rate the perceived IMPORTANCE of \ndoing your research in a reproducible way")
+
+colours <- RColorBrewer::brewer.pal(length(categoryColumns), "Set1")
+
+one_to_five_levels <- c("1", "2", "3", "4", "5")
+questionsBarplot = function(data, main, colour, levels) {
+  barplot(table(data, useNA = "no"), 
+          main = main,
+          xlab = "Level", 
+          ylim = c(0,12),
+          names.arg = levels,col = colours[colour])
+}
+
+par(mfrow = c(1,length(categoryColumns)))
+
+questionsBarplot(geotech_pretest$`Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`,
+                main = paste("A:", categoryColumns[1]), colour = 1, yesno_levels)
+questionsBarplot(geotech_pretest$`Have you ever had to REUSE YOUR OWN past code/data?`,
+                main = paste("B:", categoryColumns[2]), colour = 2, yesno_levels)
+questionsBarplot(geotech_pretest$`Please rate the perceived IMPORTANCE of doing your research in a reproducible way`,
+                main = paste("C:", categoryColumns[3]), colour = 3, one_to_five_levels)
+
+```
+
+
+
 
 
 #### Section 2: Current working practices
@@ -349,7 +389,7 @@ practices <- function(data, group) {
 
 working_practices <- data.frame()
 for (q in 1:length(questions_practices)) {
-  res <- practices(select(pretest_geotech, practice = questions_practices[[q]]), names(questions_practices)[q])
+  res <- practices(select(geotech_pretest, practice = questions_practices[[q]]), names(questions_practices)[q])
   working_practices <- bind_rows(working_practices, res)
 }
 
@@ -359,7 +399,7 @@ kable(t(questions_practices),
       col.names = c("Practice group - Survey question"), 
       format = "html",
       booktabs = TRUE,
-      caption = paste0("Note that responses to 'working practices' were multi-choice (N=", n_participants, ").")) %>%
+      caption = paste0("Note that responses to 'working practices' were multi-choice (N=", geotech_n_participants, ").")) %>%
   kable_styling(full_width = TRUE)
 ```
 
@@ -382,19 +422,19 @@ ggplot(working_practices, aes(x=forcats::fct_infreq(practice))) +
 
 ```{r pretest_geotech_backgroubd_table}
 # options(knitr.kable.NA = '-')
-kable(pretest_geotech %>% 
+kable(geotech_pretest %>% 
       select(`What BACHELOR DEGREE (or equivalent) did you have when applying for the master programme?`,
              `How many years of PROFESSIONAL EXPERIENCE did you have when applying for the master programme?`,
              `How many years of PROFESSIONAL EXPERIENCE did you have when applying for the master programme?`,
              `In which context are you DEVELOPING your master thesis?`,
              `Please select which sentence better describes the PLAN you have after the completion of your Master thesis`),
       booktabs = TRUE,
-      caption = "Previous education backgroudn and work experience, adn prospecet for future.") %>%
+      caption = "Previous education background and work experience, and prospects for future.") %>%
   kable_styling(full_width = TRUE)
   
 ```
 
-#### Results of self-assessment reproducibility
+### Results of self-assessment reproducibility
 
 ```{r fig_selfasses, fig.width=10}
 # match the colours to time series plot below
@@ -410,25 +450,31 @@ criteriaBarplot = function(data, main, colour) {
   barplot(table(data, useNA = "always"), 
           main = main,
           xlab = "Level", 
-          ylim = c(0,25),
+          ylim = c(0,8),
           names.arg = level_names,col = colours[colour])
 }
 
 par(mfrow = c(1,length(categoryColumns)))
 
-criteriaBarplot(pretest_geotech$input_data,
+criteriaBarplot(geotech_pretest$input_data,
                 main = "A: Input data", colour = 1)
-criteriaBarplot(pretest_geotech$preprocessing,
+criteriaBarplot(geotech_pretest$preprocessing,
                 main = "B: Preprocessing", colour = 2)
-criteriaBarplot(pretest_geotech$methods,
+criteriaBarplot(geotech_pretest$methods,
                 main = "C: Methods/Analysis/\nProcessing", colour = 3)
-criteriaBarplot(pretest_geotech$computational_environment,
+criteriaBarplot(geotech_pretest$computational_environment,
                 main = "D: Computational\nEnvironment", colour = 4)
-criteriaBarplot(pretest_geotech$results,
+criteriaBarplot(geotech_pretest$results,
                 main = "E: Results", colour = 5)
 ```
 
+The distribution of the reproducibility levels by criteria contrasts notably with the results obtained for the evaluation of the AGILE/GIScience papers Surprisingly, all the criteria achieve level `3`, the highest (ideal) reproducibility level. `NA` level count (1 per criterion) corresponds to the student who answered the questionnaire but did not do the self-assessment. So, NA's are not relevant for the analysis; none of the students who _did_ the self-assessment assigned NA values to the criteria. Indeed, the lowest score for any criteria was `1` which sets the bar quite high. Without a reproducibility check by a third person, these self-assessment values seem to be quite inflated, well above the stadnards level we found in academic publications. This can be interpreted at least in tow ways. First, master theses were of outstading quality with regards reproducibility (_really?_). Second, or the most credible interpretation, students did not understand well the reproducibility levels and criteria and failed to do an objective self-evaluation.
 
 ### MSc Geomatics (TU Delft) 
 
 **TODO**
+
+## Questionnaire #2 (post-test)
+
+**TODO**
+
