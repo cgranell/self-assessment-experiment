@@ -5,14 +5,14 @@ author:
     affiliation: Universitat Juame I of Castellón, Spain
 date: "15/04/2020 (updated `r format(Sys.time(), '%d %B, %Y')`)"
 abstract: |
-  This document analyses the responses to a pre-questionnaire and post-questionnaire in the framework of the [experiment on the self-assesment of reproducibility levels of master's thesis in GIS science] (https://osf.io/j97zp/) carried out during the academic year 2019/20 with master's students enrolled in two GIS-related master's programs: [Erasmus Master MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/).
+  This document analyses the responses to a pre-questionnaire and post-questionnaire in the framework of an experiment on the [self-assesment of reproducibility level of master's thesis in GIScience](https://osf.io/j97zp/) carried out during the academic year 2019/20 with master's students enrolled in two GIS-related master's programmes: [Erasmus Master MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). This initial experiment attempts to explore teaching strategies to increase the exposure to and understanding of Reproducible Research by master-level students in the area of GIScience.
 
 output:
   html_document:
     df_print: paged
     toc: yes
     toc_float: true
-    toc_depth: 3
+    toc_depth: 4
     number_sections: true
     theme: readable
   word_document:
@@ -63,19 +63,22 @@ require("rmarkdown")
 rmarkdown::render("self-assessment-experiment.Rmd", output_format = "pdf_document")
 ```
 
+# Data & methods
 
-# Data
 
-Students who have not participated in the self-assessment experiment (e.g., students who also answered the questionnaires as participants in a doctoral course at UJI), and the fields that refer to personal information (email, thesis handlers,and url to pdf files) are removed and therefore not used in the analysis.
+## Participants
 
-- [Description of the pre- and post-questionnaire](https://docs.google.com/document/d/1n9MJVsP6xZ61UW7vlXwttzZeFbgSchBOpMDgYlIiQis/edit)
-- [Description of the methodological steps](https://docs.google.com/document/d/1Ev5Q2fbzrv8PQxMC9nDBUYy73AqrvZOaT3uRjAkvWIU/edit?usp=sharing)
+Eligible participants were initially all students enrolled in the Master Thesis Project in the academic year 2019/2020 from two GIS-related master programmes:[Erasmus Master MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). The former is offered by three universities (UJI, NOVA IMS Lisboa and Münster), the latter by TU Delft.  
+
+Students who answered the questionnaires but were not enrolled in the master programmes above (e.g., PhD students who also answered the questionnaires as participants in a doctoral course at UJI) were removed from the analysis. Fields that refer to personal information (email, thesis handlers, url to pdf files) were also removed and therefore not used in the analysis.
 
 
 ```{r pretestdata_files}
+
 pretest_file <- here::here("data-raw", "pretest.csv")
 
-pretest_filtered_file <- here::here("data", "pretest_filtered.csv")
+pretest_filtered_filename <- "pretest_filtered.csv"
+pretest_filtered_file <- here::here("data", pretest_filtered_filename)
 
 selfassessment_file <- here::here("data-raw", "selfassessment.csv")
 
@@ -112,10 +115,38 @@ write.csv(selfassessment_sheet, file = selfassessment_file)
 
 ```
 
+## Methodological steps
+
+A brief summary of the steps follows are described below. Additional notes are also [available](https://docs.google.com/document/d/1Ev5Q2fbzrv8PQxMC9nDBUYy73AqrvZOaT3uRjAkvWIU/edit?usp=sharing)
+
+- Step 1. Participants answered the [first questionnaire](https://forms.gle/BTmPc5ExhEJNkUtFA) (per-test assessment) at the start of the semester (or course).
+
+- Step 2. In the [OSF web site](https://osf.io/j97zp/), participatns found an [introductory 5-minute video lecture](https://osf.io/pnw2q/) to the experiment and [20-minute video lecture to the topic of reproducibility](https://osf.io/f756x/). 
+
+- Step 3. In the same [web site](https://osf.io/j97zp/), participats also found 3 self-study, self-paced assignments (in PDF format) to introduce you to the methods and tools for reproducibility research. In case of questions, we also setup a GitHub repo as a [discussion service](https://github.com/erasmus-mundus-geotech-master/reproducibility-self-assessment) to allow all students to discuss questions with regard to the assignments and the reproducibility self-assessment of their theses.
+
+- Step 4. Participants were asked to self-assess the level of reproducibility of their master theses, as explained in the first video lecture. In practice, it meant to add a simple statement (last line) to the abstract indicating the level of each of the [five criteria](https://doi.org/10.7717/peerj.5072). 
+
+- Step 5. At the end of the semester (or course), participants answered a [second questionnaire](https://forms.gle/KCD5Ym4VJRmZzZqNA) (post-test assessment).
+
+## Questionnaires
+
+[Description of the pre- and post-questionnaire](https://docs.google.com/document/d/1n9MJVsP6xZ61UW7vlXwttzZeFbgSchBOpMDgYlIiQis/edit)
+
+## Training materials 
+
+Training materials developed for the experiment are publicly available in the OSF project ["Reproducibility of GIScience MSc Theses - Self-assessment experiment" on the Open Science Framework](https://osf.io/j97zp/).
+
+- [Introduction lecture to self-assessment reproducibility experiment](https://osf.io/pnw2q/)
+- [Introduction lecture to reproducibility](https://osf.io/f756x/)
+- [First self-study assignment](https://osf.io/b3myq/)
+- [Second self-study assignment](https://osf.io/8p7sd/)
+- [Third self-study assignment](https://osf.io/6f5pm/)
+
 
 # Analysis
 
-The following plots are based on the files `r pretest_filtered_file` and `r selfassessment_file`. Only students from _MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)_ and _MSc Geomatics (TU Delft)_ are analysed.
+The following plots are based on the file `r pretest_filtered_filename` in the folder `data`. Only students from _MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)_ and _MSc Geomatics (TU Delft)_ are analysed.
 
 ```{r evaldata_load, warning=FALSE}
 
@@ -139,7 +170,8 @@ pretest_data <- read_csv(
   na = "NA")
 
 names(pretest_data) <- names(pretest_data) %>% 
-  sub(pattern = "Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them\\? \\[*", replacement = "") %>% 
+  sub(pattern = "Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them\\? \\[*", 
+      replacement = "") %>% 
   sub(pattern = "\\]", replacement = "")
 
 
@@ -169,7 +201,7 @@ terms <- tibble(
 
 ```
 
-## Pre-test assessment 
+## Pre-test assessment (questionnaire #1) 
 
 
 ```{r pretestdata_to_likert}
@@ -208,11 +240,12 @@ n_trained <- nrow(pretest_geotech %>% filter(`Have you ever been TRAINED on repr
 n_did_selfassessment <- nrow(selfassessment_data)
 
 ```
-- `r format((n_did_selfassessment / total_students_geotech)*100, 0)`% (`r n_did_selfassessment `/`r total_students_geotech`) of students (EM Master Geotech) provided a self-assessment statement. Two of them _did not_ answered the pre-questionnaire, so they are not included in the analysis.
 
 - `r n_participants` students answered the pre-questionnaire. All but one added the self-assessment statement to their thesis manuscript.
 
-- `r n_trained` (out of `r n_participants`) students have been previously trained on reproducible research practices.
+- `r round((n_did_selfassessment / total_students_geotech)*100, 0)`% (`r n_did_selfassessment `/`r total_students_geotech`) of students (EM Master Geotech) provided a self-assessment statement. Two of them _did not_ answered the pre-questionnaire, so they are not included in the analysis.
+
+- `r n_trained` (out of `r n_participants`) students answered that they have been previously trained on reproducible research practices.
 
 
 ```{r pretest_geotech_terms}

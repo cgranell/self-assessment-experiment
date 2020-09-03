@@ -2813,10 +2813,10 @@ div.tocify {
 <h1 class="title toc-ignore">Reproducibility of GIScience MSc Theses - Self-assessment experiment</h1>
 <h4 class="author">Carlos Granell</h4>
 <address class="author_afil">
-Universitat Juame I of Castellón, Spain<br><h4 class="date">15/04/2020 (updated 02 septiembre, 2020)</h4>
+Universitat Juame I of Castellón, Spain<br><h4 class="date">15/04/2020 (updated 03 septiembre, 2020)</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
-<p>This document analyses the responses to a pre-questionnaire and post-questionnaire in the framework of the [experiment on the self-assesment of reproducibility levels of master’s thesis in GIS science] (<a href="https://osf.io/j97zp/" class="uri">https://osf.io/j97zp/</a>) carried out during the academic year 2019/20 with master’s students enrolled in two GIS-related master’s programs: <a href="https://mastergeotech.info/">Erasmus Master MSc in Geospatial Technologies</a> and <a href="https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/">MSc Geomatics</a>.</p>
+<p>This document analyses the responses to a pre-questionnaire and post-questionnaire in the framework of an experiment on the <a href="https://osf.io/j97zp/">self-assesment of reproducibility level of master’s thesis in GIScience</a> carried out during the academic year 2019/20 with master’s students enrolled in two GIS-related master’s programmes: <a href="https://mastergeotech.info/">Erasmus Master MSc in Geospatial Technologies</a> and <a href="https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/">MSc Geomatics</a>. This initial experiment attempts to explore teaching strategies to increase the exposure to and understanding of Reproducible Research by master-level students in the area of GIScience.</p>
 </div>
 
 </div>
@@ -2845,24 +2845,50 @@ require(&quot;rmarkdown&quot;)
 rmarkdown::render(&quot;self-assessment-experiment.Rmd&quot;, output_format = &quot;pdf_document&quot;)</code></pre>
 </div>
 </div>
-<div id="data" class="section level1">
-<h1><span class="header-section-number">2</span> Data</h1>
-<p>Students who have not participated in the self-assessment experiment (e.g., students who also answered the questionnaires as participants in a doctoral course at UJI), and the fields that refer to personal information (email, thesis handlers,and url to pdf files) are removed and therefore not used in the analysis.</p>
+<div id="data-methods" class="section level1">
+<h1><span class="header-section-number">2</span> Data &amp; methods</h1>
+<div id="participants" class="section level2">
+<h2><span class="header-section-number">2.1</span> Participants</h2>
+<p>Eligible participants were initially all students enrolled in the Master Thesis Project in the academic year 2019/2020 from two GIS-related master programmes:<a href="https://mastergeotech.info/">Erasmus Master MSc in Geospatial Technologies</a> and <a href="https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/">MSc Geomatics</a>. The former is offered by three universities (UJI, NOVA IMS Lisboa and Münster), the latter by TU Delft.</p>
+<p>Students who answered the questionnaires but were not enrolled in the master programmes above (e.g., PhD students who also answered the questionnaires as participants in a doctoral course at UJI) were removed from the analysis. Fields that refer to personal information (email, thesis handlers, url to pdf files) were also removed and therefore not used in the analysis.</p>
+</div>
+<div id="methodological-steps" class="section level2">
+<h2><span class="header-section-number">2.2</span> Methodological steps</h2>
+<p>A brief summary of the steps follows are described below. Additional notes are also <a href="https://docs.google.com/document/d/1Ev5Q2fbzrv8PQxMC9nDBUYy73AqrvZOaT3uRjAkvWIU/edit?usp=sharing">available</a></p>
 <ul>
-<li><a href="https://docs.google.com/document/d/1n9MJVsP6xZ61UW7vlXwttzZeFbgSchBOpMDgYlIiQis/edit">Description of the pre- and post-questionnaire</a></li>
-<li><a href="https://docs.google.com/document/d/1Ev5Q2fbzrv8PQxMC9nDBUYy73AqrvZOaT3uRjAkvWIU/edit?usp=sharing">Description of the methodological steps</a></li>
+<li><p>Step 1. Participants answered the <a href="https://forms.gle/BTmPc5ExhEJNkUtFA">first questionnaire</a> (per-test assessment) at the start of the semester (or course).</p></li>
+<li><p>Step 2. In the <a href="https://osf.io/j97zp/">OSF web site</a>, participatns found an <a href="https://osf.io/pnw2q/">introductory 5-minute video lecture</a> to the experiment and <a href="https://osf.io/f756x/">20-minute video lecture to the topic of reproducibility</a>.</p></li>
+<li><p>Step 3. In the same <a href="https://osf.io/j97zp/">web site</a>, participats also found 3 self-study, self-paced assignments (in PDF format) to introduce you to the methods and tools for reproducibility research. In case of questions, we also setup a GitHub repo as a <a href="https://github.com/erasmus-mundus-geotech-master/reproducibility-self-assessment">discussion service</a> to allow all students to discuss questions with regard to the assignments and the reproducibility self-assessment of their theses.</p></li>
+<li><p>Step 4. Participants were asked to self-assess the level of reproducibility of their master theses, as explained in the first video lecture. In practice, it meant to add a simple statement (last line) to the abstract indicating the level of each of the <a href="https://doi.org/10.7717/peerj.5072">five criteria</a>.</p></li>
+<li><p>Step 5. At the end of the semester (or course), participants answered a <a href="https://forms.gle/KCD5Ym4VJRmZzZqNA">second questionnaire</a> (post-test assessment).</p></li>
 </ul>
+</div>
+<div id="questionnaires" class="section level2">
+<h2><span class="header-section-number">2.3</span> Questionnaires</h2>
+<p><a href="https://docs.google.com/document/d/1n9MJVsP6xZ61UW7vlXwttzZeFbgSchBOpMDgYlIiQis/edit">Description of the pre- and post-questionnaire</a></p>
+</div>
+<div id="training-materials" class="section level2">
+<h2><span class="header-section-number">2.4</span> Training materials</h2>
+<p>Training materials developed for the experiment are publicly available in the OSF project <a href="https://osf.io/j97zp/">“Reproducibility of GIScience MSc Theses - Self-assessment experiment” on the Open Science Framework</a>.</p>
+<ul>
+<li><a href="https://osf.io/pnw2q/">Introduction lecture to self-assessment reproducibility experiment</a></li>
+<li><a href="https://osf.io/f756x/">Introduction lecture to reproducibility</a></li>
+<li><a href="https://osf.io/b3myq/">First self-study assignment</a></li>
+<li><a href="https://osf.io/8p7sd/">Second self-study assignment</a></li>
+<li><a href="https://osf.io/6f5pm/">Third self-study assignment</a></li>
+</ul>
+</div>
 </div>
 <div id="analysis" class="section level1">
 <h1><span class="header-section-number">3</span> Analysis</h1>
-<p>The following plots are based on the files C:/MyCode/self-assessment-experiment/data/pretest_filtered.csv and C:/MyCode/self-assessment-experiment/data-raw/selfassessment.csv. Only students from <em>MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)</em> and <em>MSc Geomatics (TU Delft)</em> are analysed.</p>
-<div id="pre-test-assessment" class="section level2">
-<h2><span class="header-section-number">3.1</span> Pre-test assessment</h2>
+<p>The following plots are based on the file pretest_filtered.csv in the folder <code>data</code>. Only students from <em>MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)</em> and <em>MSc Geomatics (TU Delft)</em> are analysed.</p>
+<div id="pre-test-assessment-questionnaire-1" class="section level2">
+<h2><span class="header-section-number">3.1</span> Pre-test assessment (questionnaire #1)</h2>
 <div id="msc-in-geospatial-technologies-uji-nova-ims-ifgi-wwu" class="section level3">
 <h3><span class="header-section-number">3.1.1</span> MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)</h3>
 <ul>
-<li><p>54.16667% (13/24) of students (EM Master Geotech) provided a self-assessment statement. Two of them <em>did not</em> answered the pre-questionnaire, so they are not included in the analysis.</p></li>
 <li><p>12 students answered the pre-questionnaire. All but one added the self-assessment statement to their thesis manuscript.</p></li>
+<li><p>54% (13/24) of students (EM Master Geotech) provided a self-assessment statement. Two of them <em>did not</em> answered the pre-questionnaire, so they are not included in the analysis.</p></li>
 <li><p>2 (out of 12) students have been previously trained on reproducible research practices.</p></li>
 </ul>
 <pre><code>## Warning: Column `Item`/`column` joining factor and character vector, coercing
@@ -3889,7 +3915,7 @@ $(document).ready(function ()  {
 
     // establish options
     var options = {
-      selectors: "h1,h2,h3",
+      selectors: "h1,h2,h3,h4",
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
