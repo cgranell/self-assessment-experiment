@@ -86,8 +86,8 @@ postest_file <- here::here("data-raw", "postest.csv")
 pretest_filtered_filename <- "pretest_filtered.csv"
 pretest_filtered_file <- here::here("data", pretest_filtered_filename)
 
-protest_filtered_filename <- "protest_filtered.csv"
-protest_filtered_file <- here::here("data", protest_filtered_filename)
+postest_filtered_filename <- "protest_filtered.csv"
+postest_filtered_file <- here::here("data", postest_filtered_filename)
 
 selfassessment_file <- here::here("data-raw", "selfassessment.csv")
 
@@ -98,7 +98,7 @@ selfassessment_file <- here::here("data-raw", "selfassessment.csv")
 pretest_sheet <- googlesheets4::read_sheet("https://drive.google.com/open?id=1YhcOeTg04AXh7mbDzjqefuuHUG91sr98e15rl92M2Zk")
 
 # Link to post-questionnaire data (responses) 
-protest_sheet <- googlesheets4::read_sheet("https://drive.google.com/open?id=1gsf9I_H34ymYvZGGYhzGNk7NoeneJoJl0bAP8NjNRAI")
+postest_sheet <- googlesheets4::read_sheet("https://drive.google.com/open?id=1gsf9I_H34ymYvZGGYhzGNk7NoeneJoJl0bAP8NjNRAI")
 
 # Link to the self-assesment done by students from the Erasmus Master MSc in Geospatial Technologies 
 selfassessment_sheet <- googlesheets4::read_sheet("https://drive.google.com/open?id=1a51epnQviXJhLLuKu5Gn6m_hqv4NnMzNLNlt_gQcqCE")
@@ -121,17 +121,15 @@ pretest_sheet_filtered <-
 
 ```{r postetsdata_filtered, eval=FALSE}
 
-protest_sheet_filtered <- 
-  protest_sheet %>%
+postest_sheet_filtered <- 
+  postest_sheet %>%
   filter(`Please choose your MASTER programme` %in% c("MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)", 
                                                       "MSc Geomatics Master (TU Delft)")) %>%
   mutate(id = row_number()) %>%
   rename(email = `Please introduce your university E-MAIL address`) %>%
-  # left_join(selfassessment_sheet, by="email") %>%
   drop_na(email) %>% 
-  # select(-email, -handle, -url_pdf)
-  select(-email)
-
+  left_join(selfassessment_sheet, by="email") %>%
+  select(-email, -handle, -url_pdf)
 ```
 
 
@@ -139,7 +137,7 @@ protest_sheet_filtered <-
 
 write.csv(pretest_sheet_filtered, file = pretest_filtered_file)
 
-write.csv(protest_sheet_filtered, file = protest_filtered_file)
+write.csv(postest_sheet_filtered, file = postest_filtered_file)
 
 write.csv(selfassessment_sheet, file = selfassessment_file)
 
@@ -211,6 +209,19 @@ names(pretest_data) <- names(pretest_data) %>%
   sub(pattern = "\\]", replacement = "")
 
 
+postest_data <- read_csv(
+  file = postest_filtered_file, 
+  col_names = TRUE, 
+  trim_ws=TRUE,
+  col_types = export_cols,
+  na = "NA")
+
+names(postest_data) <- names(postest_data) %>% 
+  sub(pattern = "Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them\\? \\[*", 
+      replacement = "") %>% 
+  sub(pattern = "\\]", replacement = "")
+
+
 cols(
    input_data = col_factor(levels = category_levels),
    preprocessing = col_factor(levels = category_levels),
@@ -237,11 +248,7 @@ terms <- tibble(
 
 ```
 
-## Questionnaire #1 (pre-test) 
-
-
-```{r pretestdata_to_likert}
-
+```{r likert_levels}
 likert_levels <- c("I have never heard of this term",
                    "I have heard this term before, but I have a vague idea of what it is",
                    "I am familiar with the term but it would be difficult to explain it",
@@ -250,9 +257,17 @@ likert_levels <- c("I have never heard of this term",
 
 likert_factor <- function(x) {factor(x, levels = likert_levels)}
 
+```
+
+
+## Questionnaire #1 (pre-test) 
+
+
+```{r pretestdata_to_likert}
+
+
 pretest_data <- 
   pretest_data %>%
-  # drop_na() %>%
   mutate_at(pull(terms, column), likert_factor) %>%
   select(-X1)
 
@@ -503,7 +518,124 @@ The distribution of the reproducibility levels by criteria contrasts notably wit
 
 ## Questionnaire #2 (post-test)
 
-**TODO**
+
+```{r postestdata_to_likert}
+postest_data <- 
+  postest_data %>%
+  mutate_at(pull(terms, column), likert_factor) %>%
+  select(-X1)
+
+```
+
+### MSc in Geospatial Technologies  (UJI, NOVA IMS, IFGI-WWU)
+
+```{r postest_geotec_stats}
+
+geotech_postest <- 
+  postest_data %>%
+  filter(`Please choose your MASTER programme` == c("MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)"))
+
+geotech_n_participants_post <- nrow(geotech_postest)
+
+```
+
+- `r round((geotech_n_participants_post / geotech_total_students)*100, 0)`% (`r geotech_n_participants_post `/`r geotech_total_students`) of students answered the second questionnaire. All added the self-assessment statement to the thesis manuscript.
+
+
+#### Section 1: Previous knowledge/experience on reproducible research
+
+
+```{r postest_geotech_terms, warning=FALSE}
+results <- 
+  geotech_postest %>%
+  select(pull(terms, column)) %>%
+  as.data.frame() %>%
+  likert()
+
+summaries <- 
+  summary(results) %>%
+  inner_join(terms, by=c("Item" ="column")) %>%
+  select(school, Item, low, neutral, high, mean, sd)
+```
+
+__Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?__
+
+```{r postest_geotech_terms_table}
+kable(summaries,
+      digits = 2,
+      row.names = FALSE,
+      col.names = c("School of thought", "Term", "low (%)", "neutral (%)", "high (%)", "mean", "sd"),
+      format = "html",
+      booktabs = TRUE,
+      caption = paste0("Percentage of answers in the disagree (low), agree (high) or neutral categories.\n",
+                       "Mean response with standard deviation using numeric values 1 to 5 for 'Strongly disagree' to 'Strongly agree'.\n",
+                       "Terms are ordered by 'high' category.")) %>%
+      kableExtra::kable_styling(full_width = TRUE) %>%
+      kableExtra::scroll_box(height = "300px")
+```
+
+Table above is the raw data to create the likert-scale plot in next Figure. 
+
+
+```{r fig_likert_terms_post, fig.width=15, fig.height=14, dpi=300}
+plot(results, type="bar", legend = "", legend.position = "bottom",
+     low.color = "goldenrod2", high.color="indianred4") +
+  ggtitle(paste0("How well do you KNOW these terms? (N=", geotech_n_participants_post, ")")) + 
+  theme_bw()
+
+```
+
+__Have you read/watched the available materials (slides, videos, additional papers,etc)?__
+
+TODO
+
+#### Section 2: Perceived importance of reproducibility in their future careers
+
+
+```{r postest_geotech_perception_table}
+options(knitr.kable.NA = '-')
+kable(geotech_postest %>% 
+      select(`Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`,
+             `Are you planning to learn more about reproducible research on your own?`,
+             `How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`),
+      booktabs = TRUE,
+      caption = paste0("Perceived importance of reproducibility in the future, \n",
+                        "using numeric values 1 to 5 for 'No important at all' to 'Really important'.")) %>% 
+  kableExtra::kable_styling(full_width = TRUE) %>%
+  kableExtra::scroll_box(height = "600px")
+  
+```
+
+The plots below refer to the questions above wih numeric/logical answers.
+
+```{r fig_questions_sect2_post, fig.width=10}
+categoryColumns <- c("Are you planning to learn more about \nreproducible research on your own?",
+                     "How important are reproducibility practices for \nyour future professional career (academia, industry, government, etc.)?")
+
+colours <- RColorBrewer::brewer.pal(length(categoryColumns), "Set1")
+
+one_to_five_levels <- c("1", "2", "3", "4", "5")
+questionsBarplot = function(data, main, colour, levels) {
+  barplot(table(data, useNA = "ifany"), 
+          main = main,
+          xlab = "Level", 
+          ylim = c(0,6),
+          names.arg = levels,col = colours[colour])
+}
+
+par(mfrow = c(1,length(categoryColumns)))
+
+questionsBarplot(geotech_postest$`Are you planning to learn more about reproducible research on your own?`,
+                main = paste("A:", categoryColumns[1]), colour = 1, c("2", "4", "5"))
+questionsBarplot(geotech_postest$`How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`,
+                main = paste("B:", categoryColumns[2]), colour = 2, c("4", "5"))
+
+
+
+
+```
+
+
 
 
 # References {-}
