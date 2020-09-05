@@ -2,10 +2,10 @@
 title: "Reproducibility of GIScience MSc Theses - Self-assessment experiment"
 author:
   - name: Carlos Granell
-    affiliation: Universitat Juame I of Castellón, Spain
+    affiliation: Universitat Jaume I of Castellón, Spain
 date: "15/04/2020 (updated `r format(Sys.time(), '%d %B, %Y')`)"
 output:
-  html_document:
+  html_document: 
     df_print: paged
     number_sections: yes
     theme: readable
@@ -18,8 +18,9 @@ output:
   word_document:
     toc: yes
 abstract: |
-  This document analyses the responses to a pre-questionnaire and post-questionnaire in the framework of an experiment on the [self-assesment of reproducibility level of master's thesis in GIScience](https://osf.io/j97zp/) carried out during the academic year 2019/20 with master's students enrolled in two GIS-related master's programmes: [Erasmus Master MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). This initial experiment attempts to explore teaching strategies to increase the exposure to and understanding of Reproducible Research by master-level students in the area of GIScience.
+  This document analyses the responses to a pre-questionnaire and post-questionnaire in the framework of an experiment on the [self-assesment of reproducibility level of master's thesis in GIScience](https://osf.io/j97zp/) carried out during the academic year 2019/20 with master's students enrolled in two GIS-related master's programmes: [Erasmus Mundus MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). This initial experiment attempts to explore teaching strategies to increase the exposure to and understanding of Reproducible Research by master-level students in the area of GIScience.
 urlcolor: blue
+bibliography: references.bib
 ---
 
 ```{r setup, include=FALSE, eval=TRUE}
@@ -46,6 +47,7 @@ library("kableExtra")
 library("here")
 library("googlesheets4")
 library("likert")
+library("bookdown")
 ```
 
 
@@ -70,7 +72,7 @@ rmarkdown::render("self-assessment-experiment.Rmd", output_format = "pdf_documen
 
 ## Participants
 
-Eligible participants were initially all students enrolled in the Master Thesis Project in the academic year 2019/2020 from two GIS-related master programmes:[Erasmus Master MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). The former is offered by three universities (UJI, NOVA IMS Lisboa and Münster), the latter by TU Delft. As participation was voluntary, the experiment was not counted towards the final grade of the master's thesis.
+Eligible participants were initially all students enrolled in the Master Thesis Project in the academic year 2019/2020 from two GIS-related master programmes:[Erasmus Mundus MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). The former is offered by three universities (UJI, NOVA IMS Lisboa and Münster), the latter by TU Delft. As participation was voluntary, the experiment was not counted towards the final grade of the master's thesis.
 
 Students who also answered the questionnaires but were not enrolled in the master programmes above (e.g., PhD students who participated in a doctoral course at UJI) were removed from the analysis. Fields that refer to personal information (email, thesis handlers, url to pdf files) were also removed and therefore not used in the analysis.
 
@@ -125,9 +127,9 @@ A brief summary of the steps follows are described below. Additional notes are a
 
 - Step 2. In the [OSF web site](https://osf.io/j97zp/), participants were provided with  an [introductory 5-minute video lecture](https://osf.io/pnw2q/) to the experiment and [20-minute video lecture to the topic of reproducibility](https://osf.io/f756x/). 
 
-- Step 3. In the same [web site](https://osf.io/j97zp/), participats also were given 3 self-study, self-paced assignments (in PDF format) to introduce them to the methods and tools for reproducibility research. To suport them, we also setup a GitHub repo as a [discussion service](https://github.com/erasmus-mundus-geotech-master/reproducibility-self-assessment) to allow all students to discuss questions with regard to the assignments and the reproducibility self-assessment of their theses.
+- Step 3. In the same [web site](https://osf.io/j97zp/), participants were also given 3 self-study, self-paced assignments (in PDF format) to introduce them to the methods and tools for reproducibility research. To suport them, we also setup a GitHub repo as a [discussion service](https://github.com/erasmus-mundus-geotech-master/reproducibility-self-assessment) to allow all students to discuss questions with regard to the assignments and the reproducibility self-assessment of their theses.
 
-- Step 4. Participants were asked to self-assess the level of reproducibility of their master theses, as explained in the first video lecture. In practice, it meant to add a simple statement (last line) to the abstract indicating the level (score) of each of the [five criteria](https://doi.org/10.7717/peerj.5072). 
+- Step 4. Participants were asked to self-assess the level of reproducibility of their master theses, as explained in the first video lecture. In practice, it meant to add a simple statement (last line) to the abstract indicating the level (score) of each of the five criteria [@nust2018].
 
 - Step 5. At the end of the semester (or master thesis project/course), participants answered a [second questionnaire](https://forms.gle/KCD5Ym4VJRmZzZqNA) (post-test assessment).
 
@@ -145,6 +147,11 @@ Training materials developed for the experiment are publicly available in the OS
 - [Second self-study assignment](https://osf.io/8p7sd/)
 - [Third self-study assignment](https://osf.io/6f5pm/)
 
+## Reproducibility self-assessment data
+
+The master's theses of the students of the _Erasmus Mundus MSc in Geospatial Technologies_ are openly available in an [institutional repository](https://run.unl.pt/handle/10362/2259/browse?type=dateissued&sort_by=3&order=ASC&rpp=30&etal=-1&year=2020&month=-1&starts_with=)
+
+The master's theses of the students of the TU Delft's _MSc Geomatics_ are openly available in ...
 
 # Analysis
 
@@ -233,7 +240,7 @@ geotech_pretest <-
   filter(`Please choose your MASTER programme` == c("MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)"))
 
 # total number of students enrolled in master thesis subject in the MSc in Geospatial Technologies (2019/20) 
-geotech_total_students <- 24
+geotech_total_students <- 25
 geotech_n_participants <- nrow(geotech_pretest)
 geotech_n_trained <- nrow(geotech_pretest %>% filter(`Have you ever been TRAINED on reproducible research practices?` == "YES"))
 
@@ -281,26 +288,14 @@ kable(summaries,
       kableExtra::scroll_box(height = "300px")
 ```
 
-The table above and the likert-scale plot below shows the same results. Students had previous knowledge (reddish answers >= 50%) for the 9 top terms, which are `r summaries$Item[1:9]`. The next term, `r summaries$Item[10]`, is to some extent knowledgeable, as 1/3 opted for the neutral response The rest of terms, `r summaries$Item[11: length(summaries$Item)]`, are in general poorly known and/or understood. This suggests that terms closely connected to reproducibility (mostly from the _pragmatic_ School of Thought, see [Fecher & Friesike (2014)](https://www.google.com/url?q=https://doi.org/10.1007/978-3-319-00026-8_2&sa=D&ust=1599142095439000&usg=AFQjCNFbzTb1A05tFVyxUzhUXVpNyJ3P5w)) were in general unknowledgeable (yellowish answers predominate). 
-
-```{r eval=FALSE}
-democratic_cols <- filter(terms, school =="democratic") %>% select(column) %>% pull()
-
-democratic_results <- 
-  geotech_pretest %>%
-  select(democratic_cols) %>%
-  as.data.frame() %>%
-  likert()
-
-```
+Table above is the raw data to create the likert-scale plot in next Figure. Students had previous knowledge (reddish answers >= 50%) for the 9 top terms, which are `r summaries$Item[1:9]`. The next term, `r summaries$Item[10]`, is to some extent knowledgeable, as 1/3 opted for the neutral response The rest of terms, `r summaries$Item[11: length(summaries$Item)]`, are in general poorly known and/or understood. This suggests that terms closely connected to reproducibility (mostly from the _pragmatic_ School of Thought, see [@fecher2014open]) were in general unknowledgeable (yellowish answers predominate). 
 
 
-```{r fig_likert_terms, fig.width=15, fig.height=10, dpi=300}
+```{r fig_likert_terms, fig.width=15, fig.height=14, dpi=300}
 plot(results, type="bar", legend = "", legend.position = "bottom",
      low.color = "goldenrod2", high.color="indianred4") +
   ggtitle(paste0("How well do you KNOW these terms? (N=", geotech_n_participants, ")")) + 
   theme_bw()
-
 
 ```
 
@@ -334,7 +329,7 @@ kable(geotech_pretest %>%
   
 ```
 
-The plot below shows tthe numeric answer of the questionas above.
+The plots below refer to the questions above wih numeric/logical answers.
 
 ```{r fig_questions_sect1, fig.width=10}
 categoryColumns <- c("Have you ever experienced DIFFICULTIES \nIN REUSING somebody else’s code / data?",
@@ -364,7 +359,7 @@ questionsBarplot(geotech_pretest$`Please rate the perceived IMPORTANCE of doing 
 ```
 
 
-
+A large majority of students encountered difficulties trying to reproduce their own code or someone else's code (A and B). The third column in the table above shows the problems the students faced. In general students gave importance to reproducibility reseaarch practices (C). As students had the chance to reproduce others' works, reproducibility practices seem to be key for them; however, they find barriers to put these practices into practice.
 
 
 #### Section 2: Current working practices
@@ -403,15 +398,20 @@ kable(t(questions_practices),
   kable_styling(full_width = TRUE)
 ```
 
-```{r Fig_practices,fig.width=15, dpi=300}
+```{r Fig_practices,fig.width=15, fig.height=10, dpi=300}
 
+max_bar <- 12
 ggplot(working_practices, aes(x=forcats::fct_infreq(practice))) +
     geom_bar(aes(fill=factor(practice_group))) +
     coord_flip() +
-    labs(title = "What tools do you plan to use to...?") +
+    labs(title = "What tools do you plan to use to...?",
+         x = "Number of responses",
+         y = "Working practices") +
     facet_grid(rows = vars(practice_group), scales = "free_y") +
     guides(fill= FALSE) +
-    theme_bw()
+    theme_bw() +
+    scale_fill_brewer(palette="Set1") +
+    scale_y_continuous(breaks = seq(0, max_bar, by=2))
 
 ```
 
@@ -478,3 +478,7 @@ The distribution of the reproducibility levels by criteria contrasts notably wit
 
 **TODO**
 
+
+# References {-}
+
+<div id="refs"></div>
