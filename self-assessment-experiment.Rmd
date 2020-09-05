@@ -47,7 +47,7 @@ library("kableExtra")
 library("here")
 library("googlesheets4")
 library("likert")
-library("bookdown")
+# library("bookdown")
 ```
 
 
@@ -77,20 +77,28 @@ Eligible participants were initially all students enrolled in the Master Thesis 
 Students who also answered the questionnaires but were not enrolled in the master programmes above (e.g., PhD students who participated in a doctoral course at UJI) were removed from the analysis. Fields that refer to personal information (email, thesis handlers, url to pdf files) were also removed and therefore not used in the analysis.
 
 
-```{r pretestdata_files}
+```{r data_files}
 
 pretest_file <- here::here("data-raw", "pretest.csv")
+postest_file <- here::here("data-raw", "postest.csv") 
 
+  
 pretest_filtered_filename <- "pretest_filtered.csv"
 pretest_filtered_file <- here::here("data", pretest_filtered_filename)
+
+protest_filtered_filename <- "protest_filtered.csv"
+protest_filtered_file <- here::here("data", protest_filtered_filename)
 
 selfassessment_file <- here::here("data-raw", "selfassessment.csv")
 
 ```
 
-```{r pretestdata_download, eval=FALSE}
+```{r data_download, eval=FALSE}
 # Link to pre-questionnaire data (responses) 
 pretest_sheet <- googlesheets4::read_sheet("https://drive.google.com/open?id=1YhcOeTg04AXh7mbDzjqefuuHUG91sr98e15rl92M2Zk")
+
+# Link to post-questionnaire data (responses) 
+protest_sheet <- googlesheets4::read_sheet("https://drive.google.com/open?id=1gsf9I_H34ymYvZGGYhzGNk7NoeneJoJl0bAP8NjNRAI")
 
 # Link to the self-assesment done by students from the Erasmus Master MSc in Geospatial Technologies 
 selfassessment_sheet <- googlesheets4::read_sheet("https://drive.google.com/open?id=1a51epnQviXJhLLuKu5Gn6m_hqv4NnMzNLNlt_gQcqCE")
@@ -111,13 +119,32 @@ pretest_sheet_filtered <-
 
 ```
 
-```{r pretestdata_save, eval=FALSE}
+```{r postetsdata_filtered, eval=FALSE}
+
+protest_sheet_filtered <- 
+  protest_sheet %>%
+  filter(`Please choose your MASTER programme` %in% c("MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)", 
+                                                      "MSc Geomatics Master (TU Delft)")) %>%
+  mutate(id = row_number()) %>%
+  rename(email = `Please introduce your university E-MAIL address`) %>%
+  # left_join(selfassessment_sheet, by="email") %>%
+  drop_na(email) %>% 
+  # select(-email, -handle, -url_pdf)
+  select(-email)
+
+```
+
+
+```{r data_save, eval=FALSE}
 
 write.csv(pretest_sheet_filtered, file = pretest_filtered_file)
+
+write.csv(protest_sheet_filtered, file = protest_filtered_file)
 
 write.csv(selfassessment_sheet, file = selfassessment_file)
 
 ```
+
 
 ## Methodological steps
 
