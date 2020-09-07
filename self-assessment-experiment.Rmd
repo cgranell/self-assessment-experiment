@@ -160,7 +160,20 @@ A brief summary of the steps follows are described below. Additional notes are a
 
 ## Questionnaires
 
-TODO: [Description of the pre- and post-questionnaire](https://docs.google.com/document/d/1n9MJVsP6xZ61UW7vlXwttzZeFbgSchBOpMDgYlIiQis/edit)
+The list of questions of each questionnaire were discussed and agreed in a [shared document](https://docs.google.com/document/d/1n9MJVsP6xZ61UW7vlXwttzZeFbgSchBOpMDgYlIiQis/edit).
+ 
+[Questionnaire #1 (pre-test)](https://forms.gle/BTmPc5ExhEJNkUtFA) is divided in three sections: 
+
+1. Previous knowledge/experience on reproducible research, 
+2. Current working practices, and 
+3. Previous education background/ work experience/etc. 
+
+[Questionnaire #2 (post-test)](https://forms.gle/KCD5Ym4VJRmZzZqNA) is divided in two sections: 
+
+1. knowledge/experience acquired on reproducible research compared to previous knowledge stated in questionnaire #1, and
+2. Perceived importance of reproducibility in their future careers.
+
+Section 1 in both questionnaires is pretty much the same, as the list of 15 terms are asked at the start and end of the semester.
 
 ## Training materials 
 
@@ -259,13 +272,7 @@ likert_factor <- function(x) {factor(x, levels = likert_levels)}
 
 ```
 
-
-## Questionnaire #1 (pre-test) 
-
-
 ```{r pretestdata_to_likert}
-
-
 pretest_data <- 
   pretest_data %>%
   mutate_at(pull(terms, column), likert_factor) %>%
@@ -273,7 +280,19 @@ pretest_data <-
 
 ```
 
-### MSc in Geospatial Technologies  (UJI, NOVA IMS, IFGI-WWU)
+
+```{r postestdata_to_likert}
+postest_data <- 
+  postest_data %>%
+  mutate_at(pull(terms, column), likert_factor) %>%
+  select(-X1)
+
+```
+
+
+## MSc in Geospatial Technologies  (UJI, NOVA IMS, IFGI-WWU)
+
+### Questionnaire #1 (pre-test) 
 
 ```{r pretest_geotec_stats}
 
@@ -333,7 +352,7 @@ kable(summaries,
 Table above is the raw data to create the likert-scale plot in next Figure. Students had previous knowledge (reddish answers >= 50%) for the 9 top terms, which are `r summaries$Item[1:9]`. The next term, `r summaries$Item[10]`, is to some extent knowledgeable, as 1/3 opted for the neutral response The rest of terms, `r summaries$Item[11: length(summaries$Item)]`, are in general poorly known and/or understood. This suggests that terms closely connected to reproducibility (mostly from the _pragmatic_ School of Thought, see [@fecher2014open]) were in general unknowledgeable (yellowish answers predominate). 
 
 
-```{r fig_likert_terms, fig.width=15, fig.height=14, dpi=300}
+```{r pretest_geotech_terms_fig, fig.width=15, fig.height=14, dpi=300}
 plot(results, type="bar", legend = "", legend.position = "bottom",
      low.color = "goldenrod2", high.color="indianred4") +
   ggtitle(paste0("How well do you KNOW these terms? (N=", geotech_n_participants, ")")) + 
@@ -341,6 +360,7 @@ plot(results, type="bar", legend = "", legend.position = "bottom",
 
 ```
 
+_Questions related to previous experience in reproducibility, main difficulties and perceived importance_
 
 ```{r pretest_geotech_perception}
 yesno_levels <- c("YES", "NO")
@@ -373,19 +393,19 @@ kable(geotech_pretest %>%
 
 The plots below refer to the questions above wih numeric/logical answers.
 
-```{r fig_questions_sect1, fig.width=10}
+```{r pretest_geotech_perception_fig, fig.width=10}
 categoryColumns <- c("Have you ever experienced DIFFICULTIES \nIN REUSING somebody else’s code / data?",
                      "Have you ever had to REUSE \nYOUR OWN past code/data?",
                      "Please rate the perceived IMPORTANCE of \ndoing your research in a reproducible way")
 
-colours <- RColorBrewer::brewer.pal(length(categoryColumns), "Set1")
+n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
+colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
 
-one_to_five_levels <- c("1", "2", "3", "4", "5")
 questionsBarplot = function(data, main, colour, levels) {
   barplot(table(data, useNA = "no"), 
           main = main,
           xlab = "Level", 
-          ylim = c(0,12),
+          ylim = c(0,14),
           names.arg = levels,col = colours[colour])
 }
 
@@ -396,7 +416,7 @@ questionsBarplot(geotech_pretest$`Have you ever experienced DIFFICULTIES IN REUS
 questionsBarplot(geotech_pretest$`Have you ever had to REUSE YOUR OWN past code/data?`,
                 main = paste("B:", categoryColumns[2]), colour = 2, yesno_levels)
 questionsBarplot(geotech_pretest$`Please rate the perceived IMPORTANCE of doing your research in a reproducible way`,
-                main = paste("C:", categoryColumns[3]), colour = 3, one_to_five_levels)
+                main = paste("C:", categoryColumns[3]), colour = 3, percepcion_levels)
 
 ```
 
@@ -412,7 +432,6 @@ questions_practices <- tibble(
   visualisation =c("What tools do you plan to use to VISUALISE/PLOT data?"),
   writing = c("What tools do you plan to WRITE UP your master thesis or conference/journal article?"),
   workflow = c("What is your (expected) process of GETTING the summary data, statistical results, figures, maps and tables IN your master thesis document (or conference/journal article)?"))
-
 
 
 practices <- function(data, group) {
@@ -462,7 +481,7 @@ ggplot(working_practices, aes(x=forcats::fct_infreq(practice))) +
 #### Section 3: Previous education background / work experience /...
 
 
-```{r pretest_geotech_backgroubd_table}
+```{r pretest_geotech_background_table}
 # options(knitr.kable.NA = '-')
 kable(geotech_pretest %>% 
       select(`What BACHELOR DEGREE (or equivalent) did you have when applying for the master programme?`,
@@ -476,58 +495,9 @@ kable(geotech_pretest %>%
   
 ```
 
-### Results of self-assessment reproducibility
 
-```{r fig_selfasses, fig.width=10}
-# match the colours to time series plot below
-categoryColumns <- c("input_data", 
-                     "preprocessing",
-                     "methods",
-                     "computational_environment",
-                     "results")
-colours <- RColorBrewer::brewer.pal(length(categoryColumns), "Set1")
+### Questionnaire #2 (post-test)
 
-level_names <- c("0", "1", "2", "3", "NA")
-criteriaBarplot = function(data, main, colour) {
-  barplot(table(data, useNA = "always"), 
-          main = main,
-          xlab = "Level", 
-          ylim = c(0,8),
-          names.arg = level_names,col = colours[colour])
-}
-
-par(mfrow = c(1,length(categoryColumns)))
-
-criteriaBarplot(geotech_pretest$input_data,
-                main = "A: Input data", colour = 1)
-criteriaBarplot(geotech_pretest$preprocessing,
-                main = "B: Preprocessing", colour = 2)
-criteriaBarplot(geotech_pretest$methods,
-                main = "C: Methods/Analysis/\nProcessing", colour = 3)
-criteriaBarplot(geotech_pretest$computational_environment,
-                main = "D: Computational\nEnvironment", colour = 4)
-criteriaBarplot(geotech_pretest$results,
-                main = "E: Results", colour = 5)
-```
-
-The distribution of the reproducibility levels by criteria contrasts notably with the results obtained for the evaluation of the AGILE/GIScience papers Surprisingly, all the criteria achieve level `3`, the highest (ideal) reproducibility level. `NA` level count (1 per criterion) corresponds to the student who answered the questionnaire but did not do the self-assessment. So, NA's are not relevant for the analysis; none of the students who _did_ the self-assessment assigned NA values to the criteria. Indeed, the lowest score for any criteria was `1` which sets the bar quite high. Without a reproducibility check by a third person, these self-assessment values seem to be quite inflated, well above the stadnards level we found in academic publications. This can be interpreted at least in tow ways. First, master theses were of outstading quality with regards reproducibility (_really?_). Second, or the most credible interpretation, students did not understand well the reproducibility levels and criteria and failed to do an objective self-evaluation.
-
-### MSc Geomatics (TU Delft) 
-
-**TODO**
-
-## Questionnaire #2 (post-test)
-
-
-```{r postestdata_to_likert}
-postest_data <- 
-  postest_data %>%
-  mutate_at(pull(terms, column), likert_factor) %>%
-  select(-X1)
-
-```
-
-### MSc in Geospatial Technologies  (UJI, NOVA IMS, IFGI-WWU)
 
 ```{r postest_geotec_stats}
 
@@ -577,7 +547,7 @@ kable(summaries,
 Table above is the raw data to create the likert-scale plot in next Figure. 
 
 
-```{r fig_likert_terms_post, fig.width=15, fig.height=14, dpi=300}
+```{r postest_geotech_terms_fig, fig.width=15, fig.height=14, dpi=300}
 plot(results, type="bar", legend = "", legend.position = "bottom",
      low.color = "goldenrod2", high.color="indianred4") +
   ggtitle(paste0("How well do you KNOW these terms? (N=", geotech_n_participants_post, ")")) + 
@@ -587,9 +557,53 @@ plot(results, type="bar", legend = "", legend.position = "bottom",
 
 __Have you read/watched the available materials (slides, videos, additional papers,etc)?__
 
-TODO
+
+```{r postest_geotech_materials}
+
+material_levels <- unique(geotech_postest$`Have you read/watched the available materials (slides, videos, additional papers,etc)?`)
+geotech_postest <- 
+  geotech_postest %>%
+  mutate(`Have you read/watched the available materials (slides, videos, additional papers,etc)?` = factor(`Have you read/watched the available materials (slides, videos, additional papers,etc)?`, levels = material_levels))
+
+```
+
+
+```{r postest_geotech_materials_fig, fig.width=10}
+categoryColumns <- c("Have you read/watched the available materials \n(slides, videos, additional papers,etc)?")
+
+n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
+colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
+
+
+# questionsBarplot = function(data, main, colour, levels) {
+#   barplot(table(data, useNA = "no"), 
+#           main = main,
+#           xlab = "Level", 
+#           ylim = c(0,6),
+#           names.arg = levels,col = colours[colour])
+# }
+
+par(mfrow = c(1,length(categoryColumns)))
+
+questionsBarplot(geotech_postest$`Have you read/watched the available materials (slides, videos, additional papers,etc)?`,
+                main = paste("A:", categoryColumns[1]), colour = 1, material_levels)
+
+```
 
 #### Section 2: Perceived importance of reproducibility in their future careers
+
+
+```{r postest_geotech_perception}
+# yesno_levels <- c("YES", "NO")
+# percepcion_levels <- c("1", "2", "3", "4", "5")
+adapt_levels <- unique(geotech_postest$`Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`)
+
+geotech_postest <- 
+  geotech_postest %>%
+  mutate(`Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?` = factor(`Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`, levels = adapt_levels),
+         `Are you planning to learn more about reproducible research on your own?` = factor(`Are you planning to learn more about reproducible research on your own?`, levels = percepcion_levels),
+         `How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?` = factor(`How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`, levels = percepcion_levels))
+```
 
 
 ```{r postest_geotech_perception_table}
@@ -606,35 +620,438 @@ kable(geotech_postest %>%
   
 ```
 
-The plots below refer to the questions above wih numeric/logical answers.
+The plots below refer to the questions above.
 
-```{r fig_questions_sect2_post, fig.width=10}
-categoryColumns <- c("Are you planning to learn more about \nreproducible research on your own?",
-                     "How important are reproducibility practices for \nyour future professional career (academia, industry, government, etc.)?")
+```{r postest_geotech_perception_fig, fig.width=10}
+categoryColumns <- c("Are you going to use/adapt reproducible research \npractice(s) in your current and/or future research \nproject (master thesis, doctoral thesis, etc.)?",
+                     "Are you planning to learn more about \nreproducible research on your own?",
+                     "How important are reproducibility practices\n for your future professional career \n(academia, industry, government, etc.)?")
 
-colours <- RColorBrewer::brewer.pal(length(categoryColumns), "Set1")
+n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
+colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
 
-one_to_five_levels <- c("1", "2", "3", "4", "5")
-questionsBarplot = function(data, main, colour, levels) {
-  barplot(table(data, useNA = "ifany"), 
+# questionsBarplot = function(data, main, colour, levels) {
+#   barplot(table(data, useNA = "no"),
+#           main = main,
+#           xlab = "Level",
+#           ylim = c(0,6),
+#           names.arg = levels, col = colours[colour])
+# }
+
+par(mfrow = c(1,length(categoryColumns)))
+
+# FIXME: Level names are long and are not correctly visualised (Plot A)
+questionsBarplot(geotech_postest$`Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`,
+                main = paste("A:", categoryColumns[1]), colour = 1, adapt_levels)
+questionsBarplot(geotech_postest$`Are you planning to learn more about reproducible research on your own?`,
+                main = paste("B:", categoryColumns[2]), colour = 2, percepcion_levels)
+questionsBarplot(geotech_postest$`How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`,
+                main = paste("C:", categoryColumns[3]), colour = 3, percepcion_levels)
+
+
+```
+
+### Results of self-assessment reproducibility
+
+```{r selfassessment_fig, fig.width=10}
+# match the colours to time series plot below
+categoryColumns <- c("input_data", 
+                     "preprocessing",
+                     "methods",
+                     "computational_environment",
+                     "results")
+
+n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
+colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
+
+level_names <- c("0", "1", "2", "3", "NA")
+criteriaBarplot = function(data, main, colour) {
+  barplot(table(data, useNA = "always"), 
           main = main,
           xlab = "Level", 
-          ylim = c(0,6),
-          names.arg = levels,col = colours[colour])
+          ylim = c(0,8),
+          names.arg = level_names,col = colours[colour])
 }
 
 par(mfrow = c(1,length(categoryColumns)))
 
-questionsBarplot(geotech_postest$`Are you planning to learn more about reproducible research on your own?`,
-                main = paste("A:", categoryColumns[1]), colour = 1, c("2", "4", "5"))
-questionsBarplot(geotech_postest$`How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`,
-                main = paste("B:", categoryColumns[2]), colour = 2, c("4", "5"))
+criteriaBarplot(geotech_pretest$input_data,
+                main = "A: Input data", colour = 1)
+criteriaBarplot(geotech_pretest$preprocessing,
+                main = "B: Preprocessing", colour = 2)
+criteriaBarplot(geotech_pretest$methods,
+                main = "C: Methods/Analysis/\nProcessing", colour = 3)
+criteriaBarplot(geotech_pretest$computational_environment,
+                main = "D: Computational\nEnvironment", colour = 4)
+criteriaBarplot(geotech_pretest$results,
+                main = "E: Results", colour = 5)
+```
+
+The distribution of the reproducibility levels by criteria contrasts notably with the results obtained for the evaluation of the AGILE/GIScience papers Surprisingly, all the criteria achieve level `3`, the highest (ideal) reproducibility level. `NA` level count (1 per criterion) corresponds to the student who answered the questionnaire but did not do the self-assessment. So, NA's are not relevant for the analysis; none of the students who _did_ the self-assessment assigned NA values to the criteria. Indeed, the lowest score for any criteria was `1` which sets the bar quite high. Without a reproducibility check by a third person, these self-assessment values seem to be quite inflated, well above the standards level we found in academic publications. This can be interpreted at least in tow ways. First, master theses were of outstanding quality with regards reproducibility (_really?_). Second, or the most credible interpretation, students did not understand well the reproducibility levels and criteria and failed to do an objective self-evaluation.
+
+
+
+<!--
+THIS IS THE ANALISIS OF THE STUDENTS IN THE MSc GEOMATICS 
+-->
+
+
+
+## MSc Geomatics (TU Delft) 
+
+### Questionnaire #1 (pre-test) 
+```{r pretest_geomatics_stats}
+
+geomatics_pretest <- 
+  pretest_data %>%
+  filter(`Please choose your MASTER programme` == c("MSc Geomatics Master (TU Delft)"))
+
+# total number of students enrolled in master thesis subject in the MSc Geomatics (2019/20) 
+geomatics_total_students <- 30  #FIXME: to be confirmed
+geomatics_n_participants <- nrow(geomatics_pretest)
+geomatics_n_trained <- nrow(geomatics_pretest %>% filter(`Have you ever been TRAINED on reproducible research practices?` == "YES"))
+
+```
+
+- `r geomatics_total_students` students of the MSc Geomatics _did_ eventually deliver the master thesis project.
+
+- `r round((geomatics_n_participants / geomatics_total_students)*100, 0)`% (`r geomatics_n_participants `/`r geomatics_total_students`) of students answered the first questionnaire.
+
+#### Section 1: Previous knowledge/experience on reproducible research
+
+`r geomatics_n_trained` (out of `r geomatics_n_participants`) students answered that they have been previously trained on reproducible research practices. 
+
+
+```{r pretest_geomatics_terms, warning=FALSE}
+results <- 
+  geomatics_pretest %>%
+  select(pull(terms, column)) %>%
+  as.data.frame() %>%
+  likert()
+
+summaries <- 
+  summary(results) %>%
+  inner_join(terms, by=c("Item" ="column")) %>%
+  select(school, Item, low, neutral, high, mean, sd)
+```
+
+__Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?__
+
+```{r pretest_geomatics_terms_table}
+kable(summaries,
+      digits = 2,
+      row.names = FALSE,
+      col.names = c("School of thought", "Term", "low (%)", "neutral (%)", "high (%)", "mean", "sd"),
+      format = "html",
+      booktabs = TRUE,
+      caption = paste0("Percentage of answers in the disagree (low), agree (high) or neutral categories.\n",
+                       "Mean response with standard deviation using numeric values 1 to 5 for 'Strongly disagree' to 'Strongly agree'.\n",
+                       "Terms are ordered by 'high' category.")) %>%
+      kableExtra::kable_styling(full_width = TRUE) %>%
+      kableExtra::scroll_box(height = "300px")
+```
+
+Table above is the raw data to create the likert-scale plot in next Figure. 
+
+
+```{r pretest_geomatics_terms_fig, fig.width=15, fig.height=14, dpi=300}
+plot(results, type="bar", legend = "", legend.position = "bottom",
+     low.color = "goldenrod2", high.color="indianred4") +
+  ggtitle(paste0("How well do you KNOW these terms? (N=", geomatics_n_participants, ")")) + 
+  theme_bw()
+
+```
+
+
+_Questions related to previous experience in reproducibility, main difficulties and perceived importance_
+
+```{r pretest_geomatics_perception}
+yesno_levels <- c("YES", "NO")
+percepcion_levels <- c("1", "2", "3", "4", "5")
+
+geomatics_pretest <- 
+  geomatics_pretest %>%
+  mutate(`Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?` = factor(`Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`, levels = yesno_levels),
+         `Have you ever had to REUSE YOUR OWN past code/data?` = factor(`Have you ever had to REUSE YOUR OWN past code/data?`, levels = yesno_levels),
+         `Please rate the perceived IMPORTANCE of doing your research in a reproducible way` = factor(`Please rate the perceived IMPORTANCE of doing your research in a reproducible way`, levels = percepcion_levels))
+```
+
+
+```{r pretest_geomatics_perception_table}
+options(knitr.kable.NA = '-')
+kable(geomatics_pretest %>% 
+      select(`Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`,
+             `Have you ever had to REUSE YOUR OWN past code/data?`,
+             `If you answered YES in either of the last two questions, please explain which were the MAIN DIFFICULTIES you experienced. If NO, skip question`,
+             `Do you know where to look for HELP and extra information to make your research reproducible?`,
+             `Please rate the perceived IMPORTANCE of doing your research in a reproducible way`,
+             `According to you, why is it IMPORTANT (or not) to do your research in a reproducible way?`),
+      booktabs = TRUE,
+      caption = paste0("Previous experience in reproducibility, main difficulties and perceived importance, \n",
+                        "using numeric values 1 to 5 for 'No important at all' to 'Really important'.")) %>% 
+  kableExtra::kable_styling(full_width = TRUE) %>%
+  kableExtra::scroll_box(height = "600px")
+  
+```
+
+The plots below refer to the questions above wih numeric/logical answers.
+
+```{r pretest_geomatics_perception_fig, fig.width=10}
+categoryColumns <- c("Have you ever experienced DIFFICULTIES \nIN REUSING somebody else’s code / data?",
+                     "Have you ever had to REUSE \nYOUR OWN past code/data?",
+                     "Please rate the perceived IMPORTANCE of \ndoing your research in a reproducible way")
+
+n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
+colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
+
+# questionsBarplot = function(data, main, colour, levels) {
+#   barplot(table(data, useNA = "no"), 
+#           main = main,
+#           xlab = "Level", 
+#           ylim = c(0,12),
+#           names.arg = levels,col = colours[colour])
+# }
+
+par(mfrow = c(1,length(categoryColumns)))
+
+questionsBarplot(geomatics_pretest$`Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`,
+                main = paste("A:", categoryColumns[1]), colour = 1, yesno_levels)
+questionsBarplot(geomatics_pretest$`Have you ever had to REUSE YOUR OWN past code/data?`,
+                main = paste("B:", categoryColumns[2]), colour = 2, yesno_levels)
+questionsBarplot(geomatics_pretest$`Please rate the perceived IMPORTANCE of doing your research in a reproducible way`,
+                main = paste("C:", categoryColumns[3]), colour = 3, percepcion_levels)
+
+```
+
+#### Section 2: Current working practices
+
+```{r pretest_geomatics_working_practices}
+# questions_practices <- tibble(
+#   analysis = c("What tools do you plan to use to ANALYSE data?"),
+#   visualisation =c("What tools do you plan to use to VISUALISE/PLOT data?"),
+#   writing = c("What tools do you plan to WRITE UP your master thesis or conference/journal article?"),
+#   workflow = c("What is your (expected) process of GETTING the summary data, statistical results, figures, maps and tables IN your master thesis document (or conference/journal article)?"))
+
+# 
+# practices <- function(data, group) {
+#   data %>%
+#     separate_rows(practice, sep = "\\),") %>%   # But ")" is also gone..
+#     mutate(practice = stringr::str_trim(practice),
+#            practice = if_else(str_sub(practice, -1) == ")", practice, paste0(practice, ")"))) %>%
+#     add_column(practice_group=group)
+# }
+
+
+working_practices <- data.frame()
+for (q in 1:length(questions_practices)) {
+  res <- practices(select(geomatics_pretest, practice = questions_practices[[q]]), names(questions_practices)[q])
+  working_practices <- bind_rows(working_practices, res)
+}
+
+
+kable(t(questions_practices),
+      col.names = c("Practice group - Survey question"), 
+      format = "html",
+      booktabs = TRUE,
+      caption = paste0("Note that responses to 'working practices' were multi-choice (N=", geomatics_n_participants, ").")) %>%
+  kable_styling(full_width = TRUE)
+```
+
+```{r pretest_geomatics_working_practices_fig,fig.width=15, fig.height=10, dpi=300}
+
+max_bar <- 14
+ggplot(working_practices, aes(x=forcats::fct_infreq(practice))) +
+    geom_bar(aes(fill=factor(practice_group))) +
+    coord_flip() +
+    labs(title = "What tools do you plan to use to...?",
+         x = "Number of responses",
+         y = "Working practices") +
+    facet_grid(rows = vars(practice_group), scales = "free_y") +
+    guides(fill= FALSE) +
+    theme_bw() +
+    scale_fill_brewer(palette="Set1") +
+    scale_y_continuous(breaks = seq(0, max_bar, by=2))
+
+```
+
+
+#### Section 3: Previous education background / work experience /...
+
+```{r pretest_geomatics_background_table}
+# options(knitr.kable.NA = '-')
+kable(geomatics_pretest %>% 
+      select(`What BACHELOR DEGREE (or equivalent) did you have when applying for the master programme?`,
+             `How many years of PROFESSIONAL EXPERIENCE did you have when applying for the master programme?`,
+             `How many years of PROFESSIONAL EXPERIENCE did you have when applying for the master programme?`,
+             `In which context are you DEVELOPING your master thesis?`,
+             `Please select which sentence better describes the PLAN you have after the completion of your Master thesis`),
+      booktabs = TRUE,
+      caption = "Previous education background and work experience, and prospects for future.") %>%
+  kable_styling(full_width = TRUE)
+  
+```
+
+### Questionnaire #2 (post-test)
+
+
+```{r postest_geomatics_stats}
+
+geomatics_postest <- 
+  postest_data %>%
+  filter(`Please choose your MASTER programme` == c("MSc Geomatics Master (TU Delft)"))
+
+geomatics_n_participants_post <- nrow(geomatics_postest)
+
+```
+
+- `r round((geomatics_n_participants_post / geomatics_total_students)*100, 0)`% (`r geomatics_n_participants_post `/`r geomatics_total_students`) of students answered the second questionnaire.
+
+
+#### Section 1: Previous knowledge/experience on reproducible research
+
+
+```{r postest_geomatics_terms, warning=FALSE}
+results <- 
+  geomatics_postest %>%
+  select(pull(terms, column)) %>%
+  as.data.frame() %>%
+  likert()
+
+summaries <- 
+  summary(results) %>%
+  inner_join(terms, by=c("Item" ="column")) %>%
+  select(school, Item, low, neutral, high, mean, sd)
+```
+
+__Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?__
+
+```{r postest_geomatics_terms_table}
+kable(summaries,
+      digits = 2,
+      row.names = FALSE,
+      col.names = c("School of thought", "Term", "low (%)", "neutral (%)", "high (%)", "mean", "sd"),
+      format = "html",
+      booktabs = TRUE,
+      caption = paste0("Percentage of answers in the disagree (low), agree (high) or neutral categories.\n",
+                       "Mean response with standard deviation using numeric values 1 to 5 for 'Strongly disagree' to 'Strongly agree'.\n",
+                       "Terms are ordered by 'high' category.")) %>%
+      kableExtra::kable_styling(full_width = TRUE) %>%
+      kableExtra::scroll_box(height = "300px")
+```
+
+Table above is the raw data to create the likert-scale plot in next Figure. 
+
+
+```{r postest_geomatics_terms_fig, fig.width=15, fig.height=14, dpi=300}
+plot(results, type="bar", legend = "", legend.position = "bottom",
+     low.color = "goldenrod2", high.color="indianred4") +
+  ggtitle(paste0("How well do you KNOW these terms? (N=", geotech_n_participants_post, ")")) + 
+  theme_bw()
+
+```
+
+__Have you read/watched the available materials (slides, videos, additional papers,etc)?__
+
+
+```{r postest_geomatics_materials}
+
+material_levels <- unique(geomatics_postest$`Have you read/watched the available materials (slides, videos, additional papers,etc)?`)
+geomatics_postest <- 
+  geomatics_postest %>%
+  mutate(`Have you read/watched the available materials (slides, videos, additional papers,etc)?` = factor(`Have you read/watched the available materials (slides, videos, additional papers,etc)?`, levels = material_levels))
+
+```
+
+
+```{r postest_geomatics_materials_fig, fig.width=10}
+categoryColumns <- c("Have you read/watched the available materials \n(slides, videos, additional papers,etc)?")
+
+n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
+colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
+
+
+# questionsBarplot = function(data, main, colour, levels) {
+#   barplot(table(data, useNA = "no"), 
+#           main = main,
+#           xlab = "Level", 
+#           ylim = c(0,6),
+#           names.arg = levels,col = colours[colour])
+# }
+
+par(mfrow = c(1,length(categoryColumns)))
+
+questionsBarplot(geomatics_postest$`Have you read/watched the available materials (slides, videos, additional papers,etc)?`,
+                main = paste("A:", categoryColumns[1]), colour = 1, material_levels)
+
+```
+
+#### Section 2: Perceived importance of reproducibility in their future careers
+
+
+```{r postest_geomatics_perception}
+# yesno_levels <- c("YES", "NO")
+# percepcion_levels <- c("1", "2", "3", "4", "5")
+adapt_levels <- unique(geomatics_postest$`Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`)
+
+geomatics_postest <- 
+  geomatics_postest %>%
+  mutate(`Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?` = factor(`Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`, levels = adapt_levels),
+         `Are you planning to learn more about reproducible research on your own?` = factor(`Are you planning to learn more about reproducible research on your own?`, levels = percepcion_levels),
+         `How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?` = factor(`How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`, levels = percepcion_levels))
+```
+
+
+```{r postest_geomatics_perception_table}
+options(knitr.kable.NA = '-')
+kable(geomatics_postest %>% 
+      select(`Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`,
+             `Are you planning to learn more about reproducible research on your own?`,
+             `How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`),
+      booktabs = TRUE,
+      caption = paste0("Perceived importance of reproducibility in the future, \n",
+                        "using numeric values 1 to 5 for 'No important at all' to 'Really important'.")) %>% 
+  kableExtra::kable_styling(full_width = TRUE) %>%
+  kableExtra::scroll_box(height = "600px")
+  
+```
+
+The plots below refer to the questions above.
+
+```{r postest_geomatics_perception_fig, fig.width=10}
+categoryColumns <- c("Are you going to use/adapt reproducible research \npractice(s) in your current and/or future research \nproject (master thesis, doctoral thesis, etc.)?",
+                     "Are you planning to learn more about \nreproducible research on your own?",
+                     "How important are reproducibility practices\n for your future professional career \n(academia, industry, government, etc.)?")
+
+n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
+colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
+
+# questionsBarplot = function(data, main, colour, levels) {
+#   barplot(table(data, useNA = "no"), 
+#           main = main,
+#           xlab = "Level", 
+#           ylim = c(0,6),
+#           names.arg = levels,col = colours[colour])
+# }
+
+par(mfrow = c(1,length(categoryColumns)))
+
+# FIXME: Level names are long and are not correctly visualised (Plot A)
+questionsBarplot(geomatics_postest$`Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`,
+                main = paste("A:", categoryColumns[1]), colour = 1, adapt_levels)
+questionsBarplot(geomatics_postest$`Are you planning to learn more about reproducible research on your own?`,
+                main = paste("B:", categoryColumns[2]), colour = 2, percepcion_levels)
+questionsBarplot(geomatics_postest$`How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`,
+                main = paste("C:", categoryColumns[3]), colour = 3, percepcion_levels)
 
 
 
 
 ```
 
+
+### Results of self-assessment reproducibility
+
+**TODO**
 
 
 
