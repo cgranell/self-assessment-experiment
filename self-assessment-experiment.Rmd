@@ -189,7 +189,7 @@ Training materials developed for the experiment are publicly available in the OS
 
 The master's theses of the students of the _Erasmus Mundus MSc in Geospatial Technologies_ are openly available in an [institutional repository](https://run.unl.pt/handle/10362/2259/browse?type=dateissued&sort_by=3&order=ASC&rpp=30&etal=-1&year=2020&month=-1&starts_with=)
 
-The master's theses of the students of the TU Delft's _MSc Geomatics_ are openly available in ...
+The master's theses of the students of the TU Delft's _MSc Geomatics_ are openly available in an [instituational repository](https://3d.bk.tudelft.nl/education/#theses).
 
 # Analysis
 
