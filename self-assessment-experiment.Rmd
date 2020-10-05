@@ -79,8 +79,8 @@ Students who also answered the questionnaires but were not enrolled in the maste
 
 ```{r data_files}
 
-pretest_file <- here::here("data-raw", "pretest.csv")
-postest_file <- here::here("data-raw", "postest.csv") 
+# pretest_file <- here::here("data-raw", "pretest.csv")
+# postest_file <- here::here("data-raw", "postest.csv") 
 
   
 pretest_filtered_filename <- "pretest_filtered.csv"
@@ -89,7 +89,7 @@ pretest_filtered_file <- here::here("data", pretest_filtered_filename)
 postest_filtered_filename <- "protest_filtered.csv"
 postest_filtered_file <- here::here("data", postest_filtered_filename)
 
-selfassessment_file <- here::here("data-raw", "selfassessment.csv")
+selfassessment_filtered_file <- here::here("data", "selfassessment_filtered.csv")
 
 ```
 
@@ -100,7 +100,7 @@ pretest_sheet <- googlesheets4::read_sheet("https://drive.google.com/open?id=1Yh
 # Link to post-questionnaire data (responses) 
 postest_sheet <- googlesheets4::read_sheet("https://drive.google.com/open?id=1gsf9I_H34ymYvZGGYhzGNk7NoeneJoJl0bAP8NjNRAI")
 
-# Link to the self-assesment done by students from the Erasmus Master MSc in Geospatial Technologies 
+# Link to the self-assessment done by students from the Erasmus Master MSc in Geospatial Technologies 
 selfassessment_sheet <- googlesheets4::read_sheet("https://drive.google.com/open?id=1a51epnQviXJhLLuKu5Gn6m_hqv4NnMzNLNlt_gQcqCE")
 ```
 
@@ -133,13 +133,22 @@ postest_sheet_filtered <-
 ```
 
 
+```{r seflassessment_filtered, eval=FALSE}
+
+selfassessment_sheet_filtered <- 
+  selfassessment_sheet %>%
+  select(-email, -handle, -url_pdf)
+```
+
+
+
 ```{r data_save, eval=FALSE}
 
 write.csv(pretest_sheet_filtered, file = pretest_filtered_file)
 
 write.csv(postest_sheet_filtered, file = postest_filtered_file)
 
-write.csv(selfassessment_sheet, file = selfassessment_file)
+write.csv(selfassessment_sheet_filtered, file = selfassessment_filtered_file)
 
 ```
 
@@ -150,7 +159,7 @@ A brief summary of the steps follows are described below. Additional notes are a
 
 - Step 1. Participants answered the [first questionnaire](https://forms.gle/BTmPc5ExhEJNkUtFA) (per-test assessment) at the start of the semester (or master thesis project/course).
 
-- Step 2. In the [OSF web site](https://osf.io/j97zp/), participants were provided with  an [introductory 5-minute video lecture](https://osf.io/pnw2q/) to the experiment and [20-minute video lecture to the topic of reproducibility](https://osf.io/f756x/). 
+- Step 2. In the [OSF web site](https://osf.io/j97zp/), participants were provided with an [introductory 5-minute video lecture](https://osf.io/pnw2q/) to the experiment and [20-minute video lecture to the topic of reproducibility](https://osf.io/f756x/). 
 
 - Step 3. In the same [web site](https://osf.io/j97zp/), participants were also given 3 self-study, self-paced assignments (in PDF format) to introduce them to the methods and tools for reproducibility research. To suport them, we also setup a GitHub repo as a [discussion service](https://github.com/erasmus-mundus-geotech-master/reproducibility-self-assessment) to allow all students to discuss questions with regard to the assignments and the reproducibility self-assessment of their theses.
 
@@ -166,11 +175,11 @@ The list of questions of each questionnaire were discussed and agreed in a [shar
 
 1. Previous knowledge/experience on reproducible research, 
 2. Current working practices, and 
-3. Previous education background/ work experience/etc. 
+3. Previous education background/work experience/etc. 
 
 [Questionnaire #2 (post-test)](https://forms.gle/KCD5Ym4VJRmZzZqNA) is divided in two sections: 
 
-1. knowledge/experience acquired on reproducible research compared to previous knowledge stated in questionnaire #1, and
+1. Knowledge/experience acquired on reproducible research compared to what was stated in questionnaire #1, and
 2. Perceived importance of reproducibility in their future careers.
 
 Section 1 in both questionnaires is pretty much the same, as the list of 15 terms are asked at the start and end of the semester.
@@ -187,13 +196,13 @@ Training materials developed for the experiment are publicly available in the OS
 
 ## Reproducibility self-assessment data
 
-The master's theses of the students of the _Erasmus Mundus MSc in Geospatial Technologies_ are openly available in an [institutional repository](https://run.unl.pt/handle/10362/2259/browse?type=dateissued&sort_by=3&order=ASC&rpp=30&etal=-1&year=2020&month=-1&starts_with=)
+The master's theses of the students of the _Erasmus Mundus MSc in Geospatial Technologies_ are openly available in an [institutional repository](https://run.unl.pt/handle/10362/2259/browse?type=dateissued&sort_by=3&order=ASC&rpp=30&etal=-1&year=2020&month=-1&starts_with=). Most of the participating students added the self-assessment sentence in the specified format.
 
-The master's theses of the students of the TU Delft's _MSc Geomatics_ are openly available in an [instituational repository](https://3d.bk.tudelft.nl/education/#theses).
+The master's theses of the students of the TU Delft's _MSc Geomatics_ are openly available in an [instituational repository](https://3d.bk.tudelft.nl/education/#theses). Here, none of the students added the self-assessment sentence as requested. However, some of them added an appendix to their theses to reflect on the reproducibility of the thesis in a narrative way.
 
 # Analysis
 
-The following plots and tables are based on the file `r pretest_filtered_filename` in the folder `data`. Only students from _MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)_ and _MSc Geomatics (TU Delft)_ are analysed.
+The following plots and tables are based on the files `r pretest_filtered_filename` and `r postest_filtered_filename` in the folder `data`. Only students from _MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)_ and _MSc Geomatics (TU Delft)_ are analysed.
 
 ```{r evaldata_load, warning=FALSE}
 
@@ -246,9 +255,9 @@ cols(
 
 
 selfassessment_data <- read_csv(
-  file = selfassessment_file, 
-  col_names = TRUE, 
-  trim_ws = TRUE, 
+  file = selfassessment_filtered_file,
+  col_names = TRUE,
+  trim_ws = TRUE,
   col_types = export_cols,
   na = "NA")
 
