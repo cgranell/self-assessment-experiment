@@ -196,7 +196,7 @@ The master's theses of the students of the _Erasmus Mundus MSc in Geospatial Tec
 
 The master's theses of the students of the TU Delft's _MSc Geomatics_ are openly available in an [instituational repository](https://3d.bk.tudelft.nl/education/#theses). Here, none of the students added the self-assessment sentence as requested. However, some of them added an appendix to their theses to reflect on the reproducibility of the thesis in a narrative way.
 
-# Analysis
+# Results
 
 The following plots and tables are based on the files `r pretest_filtered_filename` and `r postest_filtered_filename` in the folder `data`. Only students from _MSc in Geospatial Technologies (UJI, NOVA IMS, IFGI-WWU)_ and _MSc Geomatics (TU Delft)_ are analysed.
 
@@ -362,16 +362,16 @@ kable(summaries,
 Table above is the raw data to create the likert-scale plot in next Figure. Students had previous knowledge (reddish answers >= 50%) for the 9 top terms, which are `r summaries$Item[1:9]`. The next term, `r summaries$Item[10]`, is to some extent knowledgeable, as 1/3 opted for the neutral response The rest of terms, `r summaries$Item[11: length(summaries$Item)]`, are in general poorly known and/or understood. This suggests that terms closely connected to reproducibility (mostly from the _pragmatic_ School of Thought, see [@fecher2014open]) were in general unknowledgeable (yellowish answers predominate). 
 
 
-```{r pretest_geotech_terms_fig, fig.width=15, fig.height=14, dpi=300}
+```{r pretest_geotech_terms_fig, fig.width=14, fig.height=14, dpi=300}
 plot(results, type="bar", legend = "", legend.position = "bottom",
-     centered=FALSE,
-     low.color = "goldenrod2", high.color="indianred4") +
+     centered=TRUE, text.size=3, 
+     low.color = "indianred4", high.color="goldenrod2") +
   labs(title = "How well do you KNOW these terms?",
        subtitle = paste0(master_programme, " (N=", geotech_n_participants, ")"),
-       caption = "Data: Questionnarie #1 (pre-test).") +
+       caption = "Data: Questionnaire #1 (pre-test).") +
   theme_bw()
 
-ggsave(here::here("figs", "fig01_geoteach_survey1.png"), width = 15, height = 14, dpi = 300)
+ggsave(here::here("figs", "fig01_geoteach_pretest.png"), width = 14, height = 10, dpi = 300)
 
 ```
 
@@ -406,7 +406,7 @@ kable(geotech_pretest %>%
   
 ```
 
-The plots below refer to the questions above wih numeric/logical answers.
+The plots below refer to the questions above with numeric/logical answers.
 
 ```{r pretest_geotech_perception_fig, fig.width=10}
 categoryColumns <- c("Have you ever experienced DIFFICULTIES \nIN REUSING somebody else’s code / data?",
@@ -562,11 +562,16 @@ kable(summaries,
 Table above is the raw data to create the likert-scale plot in next Figure. 
 
 
-```{r postest_geotech_terms_fig, fig.width=15, fig.height=14, dpi=300}
+```{r postest_geotech_terms_fig, fig.width=14, fig.height=14, dpi=300}
 plot(results, type="bar", legend = "", legend.position = "bottom",
-     low.color = "goldenrod2", high.color="indianred4") +
-  ggtitle(paste0("How well do you KNOW these terms? (N=", geotech_n_participants_post, ")")) + 
+     centered=TRUE, text.size=3, 
+     low.color = "indianred4", high.color="goldenrod2") +
+  labs(title = "How well do you KNOW these terms?",
+       subtitle = paste0(master_programme, " (N=", geotech_n_participants_post, ")"),
+       caption = "Data: Questionnaire #2 (post-test).") +
   theme_bw()
+
+ggsave(here::here("figs", "fig02_geoteach_postest.png"), width = 14, height = 10, dpi = 300)
 
 ```
 
@@ -637,7 +642,7 @@ kable(geotech_postest %>%
 
 The plots below refer to the questions above.
 
-```{r postest_geotech_perception_fig, fig.width=10}
+```{r postest_geotech_perception_fig, fig.width=10, fig.height=6}
 categoryColumns <- c("Are you going to use/adapt reproducible research \npractice(s) in your current and/or future research \nproject (master thesis, doctoral thesis, etc.)?",
                      "Are you planning to learn more about \nreproducible research on your own?",
                      "How important are reproducibility practices\n for your future professional career \n(academia, industry, government, etc.)?")
@@ -665,6 +670,56 @@ questionsBarplot(geotech_postest$`How important are reproducibility practices fo
 
 
 ```
+
+### Side-by-side comparison
+
+
+```{r both_geotec_stats}
+
+geotech_pretest %>%
+  select(pull(terms, column)) %>%
+  add_column(survey_id = "pretest") -> geotech_1
+
+geotech_postest %>%
+  select(pull(terms, column)) %>%
+  add_column(survey_id = "postest") -> geotech_2
+
+
+geotech_all <- bind_rows(geotech_1, geotech_2)
+
+```
+
+
+
+```{r both_geotech_terms, warning=FALSE}
+geotech_all %>%
+  select(-survey_id) %>%
+  as.data.frame() %>%
+  likert(grouping = geotech_all$survey_id) -> results_survey
+
+```
+
+__Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?__
+
+```{r both_geotech_terms_fig, fig.width=14, fig.height=14, dpi=300}
+plot(results_survey, type="bar", legend = "", legend.position = "bottom",
+     centered=TRUE, text.size=3, 
+     low.color = "indianred4", high.color="goldenrod2",
+     group.order = c("pretest", "postest")) +
+  labs(title = "How well do you KNOW these terms (before vs after)?",
+       subtitle = paste0(master_programme, " (N=", nrow(geotech_all), ")"),
+       caption = "Data: Questionnaires #1 + #2 (pre-test + post-test).") +
+  theme_bw()
+
+ggsave(here::here("figs", "fig03_geoteach_both.png"), width = 14, height = 10, dpi = 300)
+
+```
+
+
+[Wilcoxon signed-rank test](https://stackoverflow.com/questions/37316209/likert-analysis-using-wilcoxon-to-determine-significance-between-pre-and-post-s)
+
+https://rpubs.com/dgolicher/Limert_scale_analysis
+
 
 ### Results of self-assessment reproducibility
 
@@ -713,6 +768,10 @@ THIS IS THE ANALISIS OF THE STUDENTS IN THE MSc GEOMATICS
 
 
 ## MSc Geomatics (TU Delft) 
+
+```{r}
+master_programme <- "MSc Geomatics"
+```
 
 ### Questionnaire #1 (pre-test) 
 ```{r pretest_geomatics_stats}
