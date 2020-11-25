@@ -79,14 +79,10 @@ Students who also answered the questionnaires but were not enrolled in the maste
 
 ```{r data_files}
 
-# pretest_file <- here::here("data-raw", "pretest.csv")
-# postest_file <- here::here("data-raw", "postest.csv") 
-
-  
 pretest_filtered_filename <- "pretest_filtered.csv"
 pretest_filtered_file <- here::here("data", pretest_filtered_filename)
 
-postest_filtered_filename <- "protest_filtered.csv"
+postest_filtered_filename <- "postest_filtered.csv"
 postest_filtered_file <- here::here("data", postest_filtered_filename)
 
 selfassessment_filtered_file <- here::here("data", "selfassessment_filtered.csv")
@@ -155,13 +151,13 @@ write.csv(selfassessment_sheet_filtered, file = selfassessment_filtered_file)
 
 ## Methodological steps
 
-A brief summary of the steps follows are described below. Additional notes are also [available](https://docs.google.com/document/d/1Ev5Q2fbzrv8PQxMC9nDBUYy73AqrvZOaT3uRjAkvWIU/edit?usp=sharing).
+A brief summary of the steps followed are described below. Additional notes are also [available](https://docs.google.com/document/d/1Ev5Q2fbzrv8PQxMC9nDBUYy73AqrvZOaT3uRjAkvWIU/edit?usp=sharing).
 
-- Step 1. Participants answered the [first questionnaire](https://forms.gle/BTmPc5ExhEJNkUtFA) (per-test assessment) at the start of the semester (or master thesis project/course).
+- Step 1. Participants answered the [first questionnaire](https://forms.gle/BTmPc5ExhEJNkUtFA) (pre-test assessment) at the start of the semester (or master thesis project/course).
 
-- Step 2. In the [OSF web site](https://osf.io/j97zp/), participants were provided with an [introductory 5-minute video lecture](https://osf.io/pnw2q/) to the experiment and [20-minute video lecture to the topic of reproducibility](https://osf.io/f756x/). 
+- Step 2. In the [OSF web site](https://osf.io/j97zp/), participants were provided with an [introductory 5-minute video lecture](https://osf.io/pnw2q/) to the initiative and [20-minute video lecture to the topic of reproducibility](https://osf.io/f756x/). 
 
-- Step 3. In the same [web site](https://osf.io/j97zp/), participants were also given 3 self-study, self-paced assignments (in PDF format) to introduce them to the methods and tools for reproducibility research. To suport them, we also setup a GitHub repo as a [discussion service](https://github.com/erasmus-mundus-geotech-master/reproducibility-self-assessment) to allow all students to discuss questions with regard to the assignments and the reproducibility self-assessment of their theses.
+- Step 3. In the same [web site](https://osf.io/j97zp/), participants were also given 3 self-study, self-paced assignments (in PDF format) to introduce them to the methods and tools for reproducibility research. To support them, we also set up a GitHub repo as a [discussion service](https://github.com/erasmus-mundus-geotech-master/reproducibility-self-assessment) to allow all students to discuss questions with regard to the assignments and the reproducibility self-assessment of their theses.
 
 - Step 4. Participants were asked to self-assess the level of reproducibility of their master theses, as explained in the first video lecture. In practice, it meant to add a simple statement (last line) to the abstract indicating the level (score) of each of the five criteria [@nust2018].
 
@@ -301,6 +297,11 @@ postest_data <-
 
 ## MSc in Geospatial Technologies  (UJI, NOVA IMS, IFGI-WWU)
 
+```{r master_title}
+master_programme <- "MSc in Geospatial Technologies"
+```
+
+
 ### Questionnaire #1 (pre-test) 
 
 ```{r pretest_geotec_stats}
@@ -363,9 +364,14 @@ Table above is the raw data to create the likert-scale plot in next Figure. Stud
 
 ```{r pretest_geotech_terms_fig, fig.width=15, fig.height=14, dpi=300}
 plot(results, type="bar", legend = "", legend.position = "bottom",
+     centered=FALSE,
      low.color = "goldenrod2", high.color="indianred4") +
-  ggtitle(paste0("How well do you KNOW these terms? (N=", geotech_n_participants, ")")) + 
+  labs(title = "How well do you KNOW these terms?",
+       subtitle = paste0(master_programme, " (N=", geotech_n_participants, ")"),
+       caption = "Data: Questionnarie #1 (pre-test).") +
   theme_bw()
+
+ggsave(here::here("figs", "fig01_geoteach_survey1.png"), width = 15, height = 14, dpi = 300)
 
 ```
 
