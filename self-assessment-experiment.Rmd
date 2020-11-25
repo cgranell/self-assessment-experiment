@@ -18,7 +18,7 @@ output:
   word_document:
     toc: yes
 abstract: |
-  This document analyses the responses to a pre-questionnaire and post-questionnaire in the framework of an experiment on the [self-assesment of reproducibility level of master's thesis in GIScience](https://osf.io/j97zp/) carried out during the academic year 2019/20 with master's students enrolled in two GIS-related master's programmes: [Erasmus Mundus MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). This initial experiment attempts to explore teaching strategies to increase the exposure to and understanding of Reproducible Research by master-level students in the area of GIScience.
+  This document analyses the responses to a pre-test questionnaire and post-test questionnaire in the framework of an initiative on the [self-assesment of reproducibility level of master's thesis in GIScience](https://osf.io/j97zp/) carried out during the academic year 2019/20 with master's students enrolled in two GIS-related master's programmes: [Erasmus Mundus MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). The overarching goal of the iniciative is to explore teaching strategies to increase the exposure to and understanding of Reproducible Research by master-level students in the area of GIScience. 
 urlcolor: blue
 bibliography: references.bib
 ---
@@ -47,7 +47,6 @@ library("kableExtra")
 library("here")
 library("googlesheets4")
 library("likert")
-# library("bookdown")
 ```
 
 
@@ -273,6 +272,12 @@ likert_levels <- c("I have never heard of this term",
                    "I can explain this term in my own words but I do not use it myself",
                    "I can easily define what exactly this term means and I use it myself")
 
+likert_levels_legend <- c("I have never \nheard of this term",
+                   "I have heard this term before, \nbut I have a vague idea of what it is",
+                   "I am familiar with the term \nbut it would be difficult to explain it",
+                   "I can explain this term in my own words\n but I do not use it myself",
+                   "I can easily define what exactly \nthis term means and I use it myself")
+
 likert_factor <- function(x) {factor(x, levels = likert_levels)}
 
 ```
@@ -362,16 +367,20 @@ kable(summaries,
 Table above is the raw data to create the likert-scale plot in next Figure. Students had previous knowledge (reddish answers >= 50%) for the 9 top terms, which are `r summaries$Item[1:9]`. The next term, `r summaries$Item[10]`, is to some extent knowledgeable, as 1/3 opted for the neutral response The rest of terms, `r summaries$Item[11: length(summaries$Item)]`, are in general poorly known and/or understood. This suggests that terms closely connected to reproducibility (mostly from the _pragmatic_ School of Thought, see [@fecher2014open]) were in general unknowledgeable (yellowish answers predominate). 
 
 
-```{r pretest_geotech_terms_fig, fig.width=14, fig.height=14, dpi=300}
-plot(results, type="bar", legend = "", legend.position = "bottom",
-     centered=TRUE, text.size=3, 
+
+```{r pretest_geotech_terms_fig, fig.width=14, fig.height=10, dpi=300}
+plot(results, type="bar", legend = "", legend.position="bottom",
+     centered=TRUE, text.size=4,
      low.color = "indianred4", high.color="goldenrod2") +
   labs(title = "How well do you KNOW these terms?",
        subtitle = paste0(master_programme, " (N=", geotech_n_participants, ")"),
        caption = "Data: Questionnaire #1 (pre-test).") +
+  theme(legend.position = "bottom") +
+  theme(legend.title = element_blank()) +
   theme_bw()
 
-ggsave(here::here("figs", "fig01_geoteach_pretest.png"), width = 14, height = 10, dpi = 300)
+ggsave(here::here("figs", "fig01_geotech_pretest.png"), width = 14, height = 10, dpi = 300)
+
 
 ```
 
@@ -424,7 +433,11 @@ questionsBarplot = function(data, main, colour, levels) {
           names.arg = levels,col = colours[colour])
 }
 
+png(file = here::here("figs", "fig02_geotech_pretest.png"), units = "cm",
+    width = 24, height = 10, res = 300)
+
 par(mfrow = c(1,length(categoryColumns)))
+
 
 questionsBarplot(geotech_pretest$`Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`,
                 main = paste("A:", categoryColumns[1]), colour = 1, yesno_levels)
@@ -432,6 +445,9 @@ questionsBarplot(geotech_pretest$`Have you ever had to REUSE YOUR OWN past code/
                 main = paste("B:", categoryColumns[2]), colour = 2, yesno_levels)
 questionsBarplot(geotech_pretest$`Please rate the perceived IMPORTANCE of doing your research in a reproducible way`,
                 main = paste("C:", categoryColumns[3]), colour = 3, percepcion_levels)
+
+dev.off()
+
 
 ```
 
@@ -564,15 +580,19 @@ Table above is the raw data to create the likert-scale plot in next Figure.
 
 ```{r postest_geotech_terms_fig, fig.width=14, fig.height=14, dpi=300}
 plot(results, type="bar", legend = "", legend.position = "bottom",
-     centered=TRUE, text.size=3, 
+     centered=TRUE, text.size=4, 
      low.color = "indianred4", high.color="goldenrod2") +
   labs(title = "How well do you KNOW these terms?",
        subtitle = paste0(master_programme, " (N=", geotech_n_participants_post, ")"),
        caption = "Data: Questionnaire #2 (post-test).") +
+  theme(legend.position = "bottom") +
+  theme(legend.title = element_blank()) +
   theme_bw()
 
-ggsave(here::here("figs", "fig02_geoteach_postest.png"), width = 14, height = 10, dpi = 300)
+ggsave(here::here("figs", "fig03_geotech_postest.png"), width = 14, height = 10, dpi = 300)
 
+
+  
 ```
 
 __Have you read/watched the available materials (slides, videos, additional papers,etc)?__
@@ -703,15 +723,18 @@ __Imagine that you are going to explain the following terms to somebody else. Ho
 
 ```{r both_geotech_terms_fig, fig.width=14, fig.height=14, dpi=300}
 plot(results_survey, type="bar", legend = "", legend.position = "bottom",
-     centered=TRUE, text.size=3, 
+     centered=TRUE, text.size=4, 
      low.color = "indianred4", high.color="goldenrod2",
      group.order = c("pretest", "postest")) +
   labs(title = "How well do you KNOW these terms (before vs after)?",
        subtitle = paste0(master_programme, " (N=", nrow(geotech_all), ")"),
        caption = "Data: Questionnaires #1 + #2 (pre-test + post-test).") +
+  theme(legend.position = "bottom") +
+  theme(legend.title = element_blank()) +
   theme_bw()
+  
 
-ggsave(here::here("figs", "fig03_geoteach_both.png"), width = 14, height = 10, dpi = 300)
+ggsave(here::here("figs", "fig05_geotech_both.png"), width = 14, height = 14, dpi = 300)
 
 ```
 
