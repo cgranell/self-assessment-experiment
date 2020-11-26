@@ -51,7 +51,10 @@ library("likert")
 library("magick")
 library("patchwork")
 library("ggthemes")
-library("ggpubr")
+```
+
+```{r load_functions, echo=TRUE, message=FALSE, warning=FALSE}
+source("functions.R")
 
 ```
 
@@ -762,7 +765,7 @@ https://rpubs.com/dgolicher/Limert_scale_analysis
 
 ### Results of self-assessment reproducibility
 
-```{r selfassessment_fig, fig.width=10}
+```{r selfassessment_fig, fig.width=10, fig.height=8}
 # match the colours to time series plot below
 categoryColumns <- c("input_data", 
                      "preprocessing",
@@ -805,18 +808,14 @@ p5 <- criteria_barplot(
   colour = 5)
 
 
+img_abstract_sentence <- magick::image_read(here::here("figs", "abstract-selfassessment-example.PNG"))
+
+p_abstract_sentence <- magick::image_ggplot(img_abstract_sentence)
 
 
-abstract_sentence <- magick::image_read(here::here("figs", "abstract-selfassessment-example.PNG"))
+(p1 + p_abstract_sentence + p5) / (p2 + p3 + p4)
 
-
-
-
-
-p_empty <- ggplot2::ggplot() + coord_fixed()
-p_abstract <- ggbackground(p_empty, abstract_sentence) 
-
-(p1 + p2 + p3) / (p4 + p_abstract + p5)
+ggsave(here::here("figs", "fig08_geotech_selfassessment.png"), width = 8, height = 7, dpi = 300)
 
 ```
 
@@ -941,22 +940,33 @@ categoryColumns <- c("Have you ever experienced DIFFICULTIES \nIN REUSING somebo
 n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
 colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
 
-# questionsBarplot = function(data, main, colour, levels) {
-#   barplot(table(data, useNA = "no"), 
-#           main = main,
-#           xlab = "Level", 
-#           ylim = c(0,12),
-#           names.arg = levels,col = colours[colour])
-# }
+p1 <- questions_barplot(
+  geomatics_pretest,
+  `Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`,
+  main = paste("A:", categoryColumns[1]), 
+  colour = 1, 
+  yesno_levels)
 
-par(mfrow = c(1,length(categoryColumns)))
+p2 <- questions_barplot(
+  geomatics_pretest,
+  `Have you ever had to REUSE YOUR OWN past code/data?`,
+  main = paste("B:", categoryColumns[2]), 
+  colour = 2, 
+  yesno_levels)
 
-questionsBarplot(geomatics_pretest$`Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`,
-                main = paste("A:", categoryColumns[1]), colour = 1, yesno_levels)
-questionsBarplot(geomatics_pretest$`Have you ever had to REUSE YOUR OWN past code/data?`,
-                main = paste("B:", categoryColumns[2]), colour = 2, yesno_levels)
-questionsBarplot(geomatics_pretest$`Please rate the perceived IMPORTANCE of doing your research in a reproducible way`,
-                main = paste("C:", categoryColumns[3]), colour = 3, percepcion_levels)
+p3 <- questions_barplot(
+  geomatics_pretest,
+  `Please rate the perceived IMPORTANCE of doing your research in a reproducible way`,
+  main = paste("C:", categoryColumns[3]), 
+  colour = 3, 
+  percepcion_levels)
+
+p1 + p2 + p3 
+
+ggsave(file = here::here("figs", "fig10_geomatica_pretest.png"),
+       width = 10, height = 7, dpi = 300)
+
+
 
 ```
 
@@ -1107,18 +1117,17 @@ n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
 colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
 
 
-# questionsBarplot = function(data, main, colour, levels) {
-#   barplot(table(data, useNA = "no"), 
-#           main = main,
-#           xlab = "Level", 
-#           ylim = c(0,6),
-#           names.arg = levels,col = colours[colour])
-# }
+p1 <- questions_barplot(
+  geomatics_postest,
+  `Have you read/watched the available materials (slides, videos, additional papers,etc)?`,
+  main = paste("A:", categoryColumns[1]), 
+  colour = 1, 
+  material_levels)
 
-par(mfrow = c(1,length(categoryColumns)))
+p1
 
-questionsBarplot(geomatics_postest$`Have you read/watched the available materials (slides, videos, additional papers,etc)?`,
-                main = paste("A:", categoryColumns[1]), colour = 1, material_levels)
+ggsave(file = here::here("figs", "fig11_geomatica_postest.png"),
+       width = 10, height = 7, dpi = 300)
 
 ```
 
@@ -1173,12 +1182,12 @@ colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
 par(mfrow = c(1,length(categoryColumns)))
 
 # FIXME: Level names are long and are not correctly visualised (Plot A)
-questionsBarplot(geomatics_postest$`Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`,
-                main = paste("A:", categoryColumns[1]), colour = 1, adapt_levels)
-questionsBarplot(geomatics_postest$`Are you planning to learn more about reproducible research on your own?`,
-                main = paste("B:", categoryColumns[2]), colour = 2, percepcion_levels)
-questionsBarplot(geomatics_postest$`How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`,
-                main = paste("C:", categoryColumns[3]), colour = 3, percepcion_levels)
+# questionsBarplot(geomatics_postest$`Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`,
+#                 main = paste("A:", categoryColumns[1]), colour = 1, adapt_levels)
+# questionsBarplot(geomatics_postest$`Are you planning to learn more about reproducible research on your own?`,
+#                 main = paste("B:", categoryColumns[2]), colour = 2, percepcion_levels)
+# questionsBarplot(geomatics_postest$`How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`,
+#                 main = paste("C:", categoryColumns[3]), colour = 3, percepcion_levels)
 
 
 
