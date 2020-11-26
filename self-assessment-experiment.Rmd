@@ -47,6 +47,9 @@ library("kableExtra")
 library("here")
 library("googlesheets4")
 library("likert")
+library("ggthemes")
+library("patchwork")
+library("stringr")
 ```
 
 
@@ -374,10 +377,14 @@ plot(results, type="bar", legend = "", legend.position="bottom",
      low.color = "indianred4", high.color="goldenrod2") +
   labs(title = "How well do you KNOW these terms?",
        subtitle = paste0(master_programme, " (N=", geotech_n_participants, ")"),
-       caption = "Data: Questionnaire #1 (pre-test).") +
-  theme(legend.position = "bottom") +
-  theme(legend.title = element_blank()) +
-  theme_bw()
+       caption = "Data: Questionnaire #1 (pre-test)") +
+  guides(fill=guide_legend(nrow=3, byrow=TRUE)) +
+  # theme_bw()
+  theme_wsj(base_size = 12) + 
+  theme(plot.title = element_text(size=20), 
+        plot.subtitle = element_text(size=16), 
+        plot.caption = element_text(size=10))
+
 
 ggsave(here::here("figs", "fig01_geotech_pretest.png"), width = 14, height = 10, dpi = 300)
 
@@ -418,41 +425,40 @@ kable(geotech_pretest %>%
 The plots below refer to the questions above with numeric/logical answers.
 
 ```{r pretest_geotech_perception_fig, fig.width=10}
-categoryColumns <- c("Have you ever experienced DIFFICULTIES \nIN REUSING somebody else’s code / data?",
-                     "Have you ever had to REUSE \nYOUR OWN past code/data?",
-                     "Please rate the perceived IMPORTANCE of \ndoing your research in a reproducible way")
+categoryColumns <- c("Have you ever experienced \nDIFFICULTIES IN REUSING \nsomebody else’s code / data?",
+                     "Have you ever had to \nREUSE YOUR OWN \npast code/data?",
+                     "Please rate the perceived \nIMPORTANCE of doing your \nresearch in a reproducible way")
 
 n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
 colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
 
-questionsBarplot = function(data, main, colour, levels) {
-  barplot(table(data, useNA = "no"), 
-          main = main,
-          xlab = "Level", 
-          ylim = c(0,14),
-          names.arg = levels,col = colours[colour])
-}
+fig_barplot <- patchwork::wrap_plots(
+  ncol = length(categoryColumns),
+  questions_barplot(geotech_pretest, 
+                    `Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`, 
+                    main = paste("A:", categoryColumns[1]), 
+                    colour = 1, 
+                    yesno_levels),
+  questions_barplot(geotech_pretest, 
+                    `Have you ever had to REUSE YOUR OWN past code/data?`, 
+                    main = paste("B:", categoryColumns[2]), 
+                    colour = 2, 
+                    yesno_levels),
+  questions_barplot(geotech_pretest, 
+                    `Please rate the perceived IMPORTANCE of doing your research in a reproducible way`, 
+                    main = paste("C:", categoryColumns[3]), 
+                    colour = 3, 
+                    percepcion_levels)
+  )
 
-png(file = here::here("figs", "fig02_geotech_pretest.png"), units = "cm",
-    width = 24, height = 10, res = 300)
+fig_barplot
 
-par(mfrow = c(1,length(categoryColumns)))
-
-
-questionsBarplot(geotech_pretest$`Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`,
-                main = paste("A:", categoryColumns[1]), colour = 1, yesno_levels)
-questionsBarplot(geotech_pretest$`Have you ever had to REUSE YOUR OWN past code/data?`,
-                main = paste("B:", categoryColumns[2]), colour = 2, yesno_levels)
-questionsBarplot(geotech_pretest$`Please rate the perceived IMPORTANCE of doing your research in a reproducible way`,
-                main = paste("C:", categoryColumns[3]), colour = 3, percepcion_levels)
-
-dev.off()
-
-
+ggsave(fig_barplot, file = here::here("figs", "fig02_geotech_pretest.png"), 
+       width = 10, height = 5, dpi = 300)
 ```
 
 
-A large majority of students encountered difficulties trying to reproduce their own code or someone else's code (A and B). The third column in the table above shows the problems the students faced. In general students gave importance to reproducibility reseaarch practices (C). As students had the chance to reproduce others' works, reproducibility practices seem to be key for them; however, they find barriers to put these practices into practice.
+A large majority of students encountered difficulties trying to reproduce their own code or someone else's code (A and B). The third column in the table above shows the problems the students faced. In general students gave importance to reproducibility research practices (C). As students had the chance to reproduce others' works, reproducibility practices seem to be key for them; however, they find barriers to put these practices into practice.
 
 
 #### Section 2: Current working practices
@@ -490,7 +496,7 @@ kable(t(questions_practices),
   kable_styling(full_width = TRUE)
 ```
 
-```{r Fig_practices,fig.width=15, fig.height=10, dpi=300}
+```{r pretest_geotech_practices_fig, fig.width=15, fig.height=10, dpi=300}
 
 max_bar <- 12
 ggplot(working_practices, aes(x=forcats::fct_infreq(practice))) +
@@ -501,10 +507,12 @@ ggplot(working_practices, aes(x=forcats::fct_infreq(practice))) +
          y = "Working practices") +
     facet_grid(rows = vars(practice_group), scales = "free_y") +
     guides(fill= FALSE) +
-    theme_bw() +
     scale_fill_brewer(palette="Set1") +
-    scale_y_continuous(breaks = seq(0, max_bar, by=2))
+    scale_y_continuous(breaks = seq(0, max_bar, by=2)) +
+    # theme_bw()
+    theme_wsj(base_size = 12) + theme(plot.title = element_text(size=16))
 
+ggsave(here::here("figs", "fig03_geotech_pretest.png"), width = 15, height = 10, dpi = 300)
 ```
 
 
@@ -584,12 +592,15 @@ plot(results, type="bar", legend = "", legend.position = "bottom",
      low.color = "indianred4", high.color="goldenrod2") +
   labs(title = "How well do you KNOW these terms?",
        subtitle = paste0(master_programme, " (N=", geotech_n_participants_post, ")"),
-       caption = "Data: Questionnaire #2 (post-test).") +
-  theme(legend.position = "bottom") +
-  theme(legend.title = element_blank()) +
-  theme_bw()
+       caption = "Data: Questionnaire #2 (post-test)") +
+  guides(fill=guide_legend(nrow=3, byrow=TRUE)) +
+  # theme_bw()
+  theme_wsj(base_size = 12) + 
+  theme(plot.title = element_text(size=20), 
+        plot.subtitle = element_text(size=16), 
+        plot.caption = element_text(size=10))
 
-ggsave(here::here("figs", "fig03_geotech_postest.png"), width = 14, height = 10, dpi = 300)
+ggsave(here::here("figs", "fig04_geotech_postest.png"), width = 14, height = 10, dpi = 300)
 
 
   
@@ -608,25 +619,23 @@ geotech_postest <-
 ```
 
 
-```{r postest_geotech_materials_fig, fig.width=10}
+```{r postest_geotech_materials_fig, fig.width=8, fig.height=4}
 categoryColumns <- c("Have you read/watched the available materials \n(slides, videos, additional papers,etc)?")
 
 n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
 colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
 
+fig_barplot <- questions_barplot(geotech_postest, 
+                    `Have you read/watched the available materials (slides, videos, additional papers,etc)?`, 
+                    main = paste("A:", categoryColumns[1]), 
+                    colour = 1, 
+                    material_levels)
 
-# questionsBarplot = function(data, main, colour, levels) {
-#   barplot(table(data, useNA = "no"), 
-#           main = main,
-#           xlab = "Level", 
-#           ylim = c(0,6),
-#           names.arg = levels,col = colours[colour])
-# }
+fig_barplot
 
-par(mfrow = c(1,length(categoryColumns)))
+ggsave(fig_barplot, file = here::here("figs", "fig05_geotech_postest.png"), 
+       width = 8, height = 4, dpi = 300)
 
-questionsBarplot(geotech_postest$`Have you read/watched the available materials (slides, videos, additional papers,etc)?`,
-                main = paste("A:", categoryColumns[1]), colour = 1, material_levels)
 
 ```
 
@@ -662,31 +671,39 @@ kable(geotech_postest %>%
 
 The plots below refer to the questions above.
 
-```{r postest_geotech_perception_fig, fig.width=10, fig.height=6}
-categoryColumns <- c("Are you going to use/adapt reproducible research \npractice(s) in your current and/or future research \nproject (master thesis, doctoral thesis, etc.)?",
-                     "Are you planning to learn more about \nreproducible research on your own?",
-                     "How important are reproducibility practices\n for your future professional career \n(academia, industry, government, etc.)?")
+```{r postest_geotech_perception_fig, fig.width=12, fig.height=6}
+categoryColumns <- c("Are you going to use/adapt \nreproducible research practice(s) \nin your current and/or future \nresearch project?",
+                     "Are you planning to learn more \nabout reproducible research on your own?",
+                     "How important are \nreproducibility practices for \nyour future professional career?")
 
 n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
 colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
 
-# questionsBarplot = function(data, main, colour, levels) {
-#   barplot(table(data, useNA = "no"),
-#           main = main,
-#           xlab = "Level",
-#           ylim = c(0,6),
-#           names.arg = levels, col = colours[colour])
-# }
+p1 <- questions_barplot(
+  geotech_postest, 
+  `Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`, 
+  main = paste("A:", categoryColumns[1]), 
+  colour = 1, 
+  adapt_levels)
 
-par(mfrow = c(1,length(categoryColumns)))
+p2 <- questions_barplot(
+  geotech_postest, 
+  `Are you planning to learn more about reproducible research on your own?`, 
+  main = paste("B:", categoryColumns[2]), 
+  colour = 2, 
+  percepcion_levels)
 
-# FIXME: Level names are long and are not correctly visualised (Plot A)
-questionsBarplot(geotech_postest$`Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`,
-                main = paste("A:", categoryColumns[1]), colour = 1, adapt_levels)
-questionsBarplot(geotech_postest$`Are you planning to learn more about reproducible research on your own?`,
-                main = paste("B:", categoryColumns[2]), colour = 2, percepcion_levels)
-questionsBarplot(geotech_postest$`How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`,
-                main = paste("C:", categoryColumns[3]), colour = 3, percepcion_levels)
+p3 <- questions_barplot(
+  geotech_postest, 
+  `How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`, 
+  main = paste("C:", categoryColumns[3]), 
+  colour = 3, 
+  percepcion_levels)
+  
+p1 + p2 + p3 
+
+ggsave(file = here::here("figs", "fig06_geotech_postest.png"),
+       width = 12, height = 6, dpi = 300)
 
 
 ```
@@ -721,20 +738,22 @@ geotech_all %>%
 
 __Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?__
 
-```{r both_geotech_terms_fig, fig.width=14, fig.height=14, dpi=300}
+```{r both_geotech_terms_fig, fig.width=14, fig.height=18, dpi=300}
 plot(results_survey, type="bar", legend = "", legend.position = "bottom",
      centered=TRUE, text.size=4, 
      low.color = "indianred4", high.color="goldenrod2",
      group.order = c("pretest", "postest")) +
   labs(title = "How well do you KNOW these terms (before vs after)?",
        subtitle = paste0(master_programme, " (N=", nrow(geotech_all), ")"),
-       caption = "Data: Questionnaires #1 + #2 (pre-test + post-test).") +
-  theme(legend.position = "bottom") +
-  theme(legend.title = element_blank()) +
-  theme_bw()
-  
+       caption = "Data: Questionnaires #1 + #2 (pre-test + post-test)") +
+  guides(fill=guide_legend(nrow=3, byrow=TRUE)) +
+  # theme_bw()
+  theme_wsj(base_size = 12) + 
+  theme(plot.title = element_text(size=20), 
+        plot.subtitle = element_text(size=16), 
+        plot.caption = element_text(size=10))  
 
-ggsave(here::here("figs", "fig05_geotech_both.png"), width = 14, height = 14, dpi = 300)
+ggsave(here::here("figs", "fig07_geotech_both.png"), width = 14, height = 18, dpi = 300)
 
 ```
 
@@ -754,27 +773,50 @@ categoryColumns <- c("input_data",
                      "computational_environment",
                      "results")
 
+# FIXME: Add WSJ theme - No se muestra NA en bar chart
+library(forcats)
+geotech_pretest %>%
+  mutate(input_data = fct_explicit_na(input_data, na_level = "N/A")) -> geotech_pretest
+
 n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
 colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
-
 level_names <- c("0", "1", "2", "3", "NA")
+
 criteriaBarplot = function(data, main, colour) {
-  barplot(table(data, useNA = "always"), 
+  barplot(table(data, useNA = "always"),
           main = main,
-          xlab = "Level", 
+          xlab = "Level",
           ylim = c(0,8),
           names.arg = level_names,col = colours[colour])
 }
 
-par(mfrow = c(1,length(categoryColumns)))
+p1 <- criteria_barplot(
+  geotech_pretest,
+  categoryColumns[1],
+  main = "A: Input data",
+  colour = 1, 
+  level_names)
 
-criteriaBarplot(geotech_pretest$input_data,
+
+
+  geotech_pretest %>%
+    ggplot2::ggplot(aes(preprocessing), 
+                    show.legend = FALSE) +
+    ggplot2::geom_bar(fill = colours[1], color = "black") +
+    ggplot2::ggtitle("A") +
+    ggplot2::scale_x_discrete(name = "Level", labels = level_names) +
+    ggplot2::scale_y_continuous(name = "",
+                                breaks = seq(from = 0, to = 8, by = 2),
+                                limits = c(0,8)) +
+    theme_wsj(base_size = 12) + theme(plot.title = element_text(size=10))
+
+p1 <- criteriaBarplot(geotech_pretest$input_data,
                 main = "A: Input data", colour = 1)
-criteriaBarplot(geotech_pretest$preprocessing,
+p2 <- criteriaBarplot(geotech_pretest$preprocessing,
                 main = "B: Preprocessing", colour = 2)
-criteriaBarplot(geotech_pretest$methods,
+p3 <- criteriaBarplot(geotech_pretest$methods,
                 main = "C: Methods/Analysis/\nProcessing", colour = 3)
-criteriaBarplot(geotech_pretest$computational_environment,
+p4 <- criteriaBarplot(geotech_pretest$computational_environment,
                 main = "D: Computational\nEnvironment", colour = 4)
 criteriaBarplot(geotech_pretest$results,
                 main = "E: Results", colour = 5)
