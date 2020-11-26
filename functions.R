@@ -1,13 +1,4 @@
 
-# Deprecated. use `questions_barplot` instead
-questionsBarplot = function(data, main, colour, levels) {
-  barplot(table(data, useNA = "no"), 
-          main = main,
-          xlab = "Level", 
-          ylim = c(0,14),
-          names.arg = levels,col = colours[colour])
-}
-
 
 questions_barplot = function(data, column, main, colour, levels, flip = FALSE) {
   col <- enquo(column)
@@ -32,6 +23,20 @@ questions_barplot = function(data, column, main, colour, levels, flip = FALSE) {
   
 }
 
-criteria_barplot = function(data, column, main, colour, levels) {
-  questions_barplot(data, column, main, colour, levels)
+criteria_barplot = function(data, column, main, colour) {
+  col <- enquo(column)
+  breaks <- seq(from = 0, to = 8, by = 2)
+  data %>%
+    ggplot2::ggplot(aes(!!col), 
+                    show.legend = FALSE) +
+    ggplot2::geom_bar(fill = colours[colour], color = "black") +
+    ggplot2::ggtitle(main) +
+    # https://community.rstudio.com/t/na-rm-argument-to-geom-bar-not-working/43275/2
+    ggplot2::scale_x_discrete(name = "Level", na.translate = TRUE) +
+    ggplot2::scale_y_continuous(name = "",
+                                breaks = breaks,
+                                limits = range(breaks)) +
+  
+    theme_wsj(base_size = 12) + theme(plot.title = element_text(size=10))
+
 }

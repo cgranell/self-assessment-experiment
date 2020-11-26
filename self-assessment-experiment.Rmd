@@ -45,11 +45,14 @@ library("tidyverse")
 library("forcats")
 library("kableExtra")
 library("here")
+library("stringr")
 library("googlesheets4")
 library("likert")
-library("ggthemes")
+library("magick")
 library("patchwork")
-library("stringr")
+library("ggthemes")
+library("ggpubr")
+
 ```
 
 
@@ -274,12 +277,6 @@ likert_levels <- c("I have never heard of this term",
                    "I am familiar with the term but it would be difficult to explain it",
                    "I can explain this term in my own words but I do not use it myself",
                    "I can easily define what exactly this term means and I use it myself")
-
-likert_levels_legend <- c("I have never \nheard of this term",
-                   "I have heard this term before, \nbut I have a vague idea of what it is",
-                   "I am familiar with the term \nbut it would be difficult to explain it",
-                   "I can explain this term in my own words\n but I do not use it myself",
-                   "I can easily define what exactly \nthis term means and I use it myself")
 
 likert_factor <- function(x) {factor(x, levels = likert_levels)}
 
@@ -619,7 +616,7 @@ geotech_postest <-
 ```
 
 
-```{r postest_geotech_materials_fig, fig.width=8, fig.height=4}
+```{r postest_geotech_materials_fig, fig.width=5, fig.height=4}
 categoryColumns <- c("Have you read/watched the available materials \n(slides, videos, additional papers,etc)?")
 
 n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
@@ -634,7 +631,7 @@ fig_barplot <- questions_barplot(geotech_postest,
 fig_barplot
 
 ggsave(fig_barplot, file = here::here("figs", "fig05_geotech_postest.png"), 
-       width = 8, height = 4, dpi = 300)
+       width = 5, height = 4, dpi = 300)
 
 
 ```
@@ -773,53 +770,54 @@ categoryColumns <- c("input_data",
                      "computational_environment",
                      "results")
 
-# FIXME: Add WSJ theme - No se muestra NA en bar chart
-library(forcats)
-geotech_pretest %>%
-  mutate(input_data = fct_explicit_na(input_data, na_level = "N/A")) -> geotech_pretest
-
 n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
 colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
-level_names <- c("0", "1", "2", "3", "NA")
-
-criteriaBarplot = function(data, main, colour) {
-  barplot(table(data, useNA = "always"),
-          main = main,
-          xlab = "Level",
-          ylim = c(0,8),
-          names.arg = level_names,col = colours[colour])
-}
+# level_names <- c("0", "1", "2", "3", NA)
 
 p1 <- criteria_barplot(
   geotech_pretest,
-  categoryColumns[1],
+  `input_data`,
   main = "A: Input data",
-  colour = 1, 
-  level_names)
+  colour = 1)
+
+p2 <- criteria_barplot(
+  geotech_pretest,
+  `preprocessing`,
+  main = "B: Preprocessing",
+  colour = 2)
+
+p3 <- criteria_barplot(
+  geotech_pretest,
+  `methods`,
+  main = "C: Methods/Analysis/\nProcessing",
+  colour = 3)
+
+p4 <- criteria_barplot(
+  geotech_pretest,
+  `computational_environment`,
+  main = "D: Computational\nEnvironment",
+  colour = 4)
+
+p5 <- criteria_barplot(
+  geotech_pretest,
+  `results`,
+  main = "D: Results",
+  colour = 5)
 
 
 
-  geotech_pretest %>%
-    ggplot2::ggplot(aes(preprocessing), 
-                    show.legend = FALSE) +
-    ggplot2::geom_bar(fill = colours[1], color = "black") +
-    ggplot2::ggtitle("A") +
-    ggplot2::scale_x_discrete(name = "Level", labels = level_names) +
-    ggplot2::scale_y_continuous(name = "",
-                                breaks = seq(from = 0, to = 8, by = 2),
-                                limits = c(0,8)) +
-    theme_wsj(base_size = 12) + theme(plot.title = element_text(size=10))
 
-p1 <- criteriaBarplot(geotech_pretest$input_data,
-                main = "A: Input data", colour = 1)
-p2 <- criteriaBarplot(geotech_pretest$preprocessing,
-                main = "B: Preprocessing", colour = 2)
-p3 <- criteriaBarplot(geotech_pretest$methods,
-                main = "C: Methods/Analysis/\nProcessing", colour = 3)
-p4 <- criteriaBarplot(geotech_pretest$computational_environment,
-                main = "D: Computational\nEnvironment", colour = 4)
-criteriaBarplot(geotech_pretest$results,
-                main = "E: Results", colour = 5)
+abstract_sentence <- magick::image_read(here::here("figs", "abstract-selfassessment-example.PNG"))
+
+
+
+
+
+p_empty <- ggplot2::ggplot() + coord_fixed()
+p_abstract <- ggbackground(p_empty, abstract_sentence) 
+
+(p1 + p2 + p3) / (p4 + p_abstract + p5)
+
 ```
 
 The distribution of the reproducibility levels by criteria contrasts notably with the results obtained for the evaluation of the AGILE/GIScience papers Surprisingly, all the criteria achieve level `3`, the highest (ideal) reproducibility level. `NA` level count (1 per criterion) corresponds to the student who answered the questionnaire but did not do the self-assessment. So, NA's are not relevant for the analysis; none of the students who _did_ the self-assessment assigned NA values to the criteria. Indeed, the lowest score for any criteria was `1` which sets the bar quite high. Without a reproducibility check by a third person, these self-assessment values seem to be quite inflated, well above the standards level we found in academic publications. This can be interpreted at least in tow ways. First, master theses were of outstanding quality with regards reproducibility (_really?_). Second, or the most credible interpretation, students did not understand well the reproducibility levels and criteria and failed to do an objective self-evaluation.
