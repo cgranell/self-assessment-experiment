@@ -3,6 +3,7 @@
 questions_barplot = function(data, column, main, colour, levels, flip = FALSE) {
   col <- enquo(column)
   n <- data %>% select(!!col) %>% summarise(n=n()) %>% .$n
+  if (n<=3) {n<-4}
   breaks <- seq(from = 0, to = n, by = 2)
   data %>%
     ggplot2::ggplot(aes(!!col), 
@@ -14,14 +15,15 @@ questions_barplot = function(data, column, main, colour, levels, flip = FALSE) {
     ggplot2::scale_y_continuous(name = "",
                                 breaks = breaks,
                                 limits = range(breaks)) -> p
-    if (flip) {
-      p <- p + ggplot2::coord_flip()
-    }
-    
-    # theme_tufte(base_size = 12) + theme(axis.ticks.x = element_blank())
-    p + theme_wsj(base_size = 12) + theme(plot.title = element_text(size=10))
   
+  if (flip) {
+    p <- p + ggplot2::coord_flip()
+  }
+  
+  # theme_tufte(base_size = 12) + theme(axis.ticks.x = element_blank())
+  p + theme_wsj(base_size = 12) + theme(plot.title = element_text(size=10))
 }
+
 
 criteria_barplot = function(data, column, main, colour) {
   col <- enquo(column)
@@ -38,5 +40,4 @@ criteria_barplot = function(data, column, main, colour) {
                                 limits = range(breaks)) +
   
     theme_wsj(base_size = 12) + theme(plot.title = element_text(size=10))
-
 }

@@ -18,7 +18,8 @@ output:
   word_document:
     toc: yes
 abstract: |
-  This document analyses the responses to a pre-test questionnaire and post-test questionnaire in the framework of an initiative on the [self-assesment of reproducibility level of master's thesis in GIScience](https://osf.io/j97zp/) carried out during the academic year 2019/20 with master's students enrolled in two GIS-related master's programmes: [Erasmus Mundus MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). The overarching goal of the iniciative is to explore teaching strategies to increase the exposure to and understanding of Reproducible Research by master-level students in the area of GIScience. 
+  As part of an iniciative to explore teaching strategies to increase the exposure to and understanding of reproducible research in the area of GIScience, we conducted an intervention with students enrolled in two GIS-related master's programmes: [Erasmus Mundus MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/) during the academic year 2019/20. This notebook analyses participants' responses to two questionnaires (pre-test and post-test) on their previous knowledge of reproducible research concepts and practices, and the self-assessment exercise on the reproducibility level of the master's theses. Results were presented in the [Research Reproducibility 2020 conference](https://pwd.aa.ufl.edu/researchre-pro/) (see [@granell2020]).
+  
 urlcolor: blue
 bibliography: references.bib
 ---
@@ -53,7 +54,7 @@ library("patchwork")
 library("ggthemes")
 ```
 
-```{r load_functions, echo=TRUE, message=FALSE, warning=FALSE}
+```{r load_functions, message=FALSE, warning=FALSE}
 source("functions.R")
 
 ```
@@ -80,7 +81,7 @@ rmarkdown::render("self-assessment-experiment.Rmd", output_format = "pdf_documen
 
 ## Participants
 
-Eligible participants were initially all students enrolled in the Master Thesis Project in the academic year 2019/2020 from two GIS-related master programmes:[Erasmus Mundus MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). The former is offered by three universities (UJI, NOVA IMS Lisboa and Münster), the latter by TU Delft. As participation was voluntary, the experiment was not counted towards the final grade of the master's thesis.
+Eligible participants were initially all students enrolled in the Master Thesis Project in the academic year 2019/2020 from two GIS-related master programmes: [Erasmus Mundus MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/). The former is offered by three universities (UJI, NOVA IMS Lisboa and Münster), the latter by TU Delft. As participation was voluntary, the experiment was not counted towards the final grade of the master's thesis.
 
 Students who also answered the questionnaires but were not enrolled in the master programmes above (e.g., PhD students who participated in a doctoral course at UJI) were removed from the analysis. Fields that refer to personal information (email, thesis handlers, url to pdf files) were also removed and therefore not used in the analysis.
 
@@ -190,7 +191,7 @@ Section 1 in both questionnaires is pretty much the same, as the list of 15 term
 
 ## Training materials 
 
-Training materials developed for the experiment are publicly available in the OSF project ["Reproducibility of GIScience MSc Theses - Self-assessment experiment" on the Open Science Framework](https://osf.io/j97zp/).
+Training materials developed for the experiment are publicly available in the OSF project ["Reproducibility of GIScience MSc Theses - Self-assessment experiment"](https://osf.io/j97zp/):
 
 - [Introduction lecture to self-assessment reproducibility experiment](https://osf.io/pnw2q/)
 - [Introduction lecture to reproducibility](https://osf.io/f756x/)
@@ -305,7 +306,7 @@ postest_data <-
 
 ## MSc in Geospatial Technologies  (UJI, NOVA IMS, IFGI-WWU)
 
-```{r master_title}
+```{r master_title_geotec}
 master_programme <- "MSc in Geospatial Technologies"
 ```
 
@@ -327,7 +328,7 @@ geotech_n_did_selfassessment <- nrow(selfassessment_data)
 
 ```
 
-- `r geotech_total_students` students of the EM MSc in Geospatial Technologies _did_ eventually deliver the master thesis project.
+- `r geotech_total_students` students _did_ eventually deliver the master thesis project.
 
 - `r round((geotech_n_participants / geotech_total_students)*100, 0)`% (`r geotech_n_participants `/`r geotech_total_students`) of students answered the first questionnaire. All but one added the self-assessment statement to the thesis manuscript.
 
@@ -351,7 +352,7 @@ summaries <-
   select(school, Item, low, neutral, high, mean, sd)
 ```
 
-__Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?__
+_Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?_
 
 ```{r pretest_geotech_terms_table}
 kable(summaries,
@@ -367,7 +368,7 @@ kable(summaries,
       kableExtra::scroll_box(height = "300px")
 ```
 
-Table above is the raw data to create the likert-scale plot in next Figure. Students had previous knowledge (reddish answers >= 50%) for the 9 top terms, which are `r summaries$Item[1:9]`. The next term, `r summaries$Item[10]`, is to some extent knowledgeable, as 1/3 opted for the neutral response The rest of terms, `r summaries$Item[11: length(summaries$Item)]`, are in general poorly known and/or understood. This suggests that terms closely connected to reproducibility (mostly from the _pragmatic_ School of Thought, see [@fecher2014open]) were in general unknowledgeable (yellowish answers predominate). 
+Table above is the raw data to create the likert-scale plot in next Figure. Students had previous knowledge (reddish answers >= 50%) for the 9 top terms, which are `r summaries$Item[1:9]`. The next term, `r summaries$Item[10]`, is to some extent knowledgeable, as 1/3 opted for the neutral response. The rest of terms, `r summaries$Item[11: length(summaries$Item)]`, are in general poorly known and/or understood. This suggests that terms closely connected to reproducibility (mostly from the _pragmatic_ School of Thought, see [@fecher2014open]) were in general unknowledgeable (yellowish answers predominate). 
 
 
 
@@ -548,7 +549,7 @@ geotech_n_participants_post <- nrow(geotech_postest)
 
 ```
 
-- `r round((geotech_n_participants_post / geotech_total_students)*100, 0)`% (`r geotech_n_participants_post `/`r geotech_total_students`) of students answered the second questionnaire. All added the self-assessment statement to the thesis manuscript.
+`r round((geotech_n_participants_post / geotech_total_students)*100, 0)`% (`r geotech_n_participants_post `/`r geotech_total_students`) of students answered the second questionnaire. All added the self-assessment statement to the thesis manuscript.
 
 
 #### Section 1: Previous knowledge/experience on reproducible research
@@ -567,7 +568,7 @@ summaries <-
   select(school, Item, low, neutral, high, mean, sd)
 ```
 
-__Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?__
+_Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?_
 
 ```{r postest_geotech_terms_table}
 kable(summaries,
@@ -606,7 +607,7 @@ ggsave(here::here("figs", "fig04_geotech_postest.png"), width = 14, height = 10,
   
 ```
 
-__Have you read/watched the available materials (slides, videos, additional papers,etc)?__
+_Have you read/watched the available materials (slides, videos, additional papers, etc)?_
 
 
 ```{r postest_geotech_materials}
@@ -619,7 +620,7 @@ geotech_postest <-
 ```
 
 
-```{r postest_geotech_materials_fig, fig.width=5, fig.height=4}
+```{r postest_geotech_materials_fig, fig.width=5, fig.height=4, fig.align='center'}
 categoryColumns <- c("Have you read/watched the available materials \n(slides, videos, additional papers,etc)?")
 
 n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
@@ -710,7 +711,6 @@ ggsave(file = here::here("figs", "fig06_geotech_postest.png"),
 
 ### Side-by-side comparison
 
-
 ```{r both_geotec_stats}
 
 geotech_pretest %>%
@@ -736,7 +736,7 @@ geotech_all %>%
 
 ```
 
-__Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?__
+_Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?_
 
 ```{r both_geotech_terms_fig, fig.width=14, fig.height=18, dpi=300}
 plot(results_survey, type="bar", legend = "", legend.position = "bottom",
@@ -757,13 +757,16 @@ ggsave(here::here("figs", "fig07_geotech_both.png"), width = 14, height = 18, dp
 
 ```
 
-
-[Wilcoxon signed-rank test](https://stackoverflow.com/questions/37316209/likert-analysis-using-wilcoxon-to-determine-significance-between-pre-and-post-s)
-
-https://rpubs.com/dgolicher/Limert_scale_analysis
+Future work: Determine statistically change between pre-test and post-test likert questions using [Wilcoxon signed-rank test](https://stackoverflow.com/questions/37316209/likert-analysis-using-wilcoxon-to-determine-significance-between-pre-and-post-s)
 
 
 ### Results of self-assessment reproducibility
+
+```{r selfassessment_abstract_fig, dpi=72, fig.cap='Example of self-assessment statement included in a thesis abstract', fig.align='center'}
+knitr::include_graphics(here::here("figs", "abstract-selfassessment-example.PNG"))
+```
+
+
 
 ```{r selfassessment_fig, fig.width=10, fig.height=8}
 # match the colours to time series plot below
@@ -804,22 +807,21 @@ p4 <- criteria_barplot(
 p5 <- criteria_barplot(
   geotech_pretest,
   `results`,
-  main = "D: Results",
+  main = "E: Results",
   colour = 5)
 
+# if you want to add an image to the blank space between plots...
+# img_abstract_sentence <- magick::image_read(here::here("figs", "abstract-selfassessment-example.PNG"))
+# p_abstract_sentence <- magick::image_ggplot(img_abstract_sentence)
+# (p1 + p_abstract_sentence + p5) / (p2 + p3 + p4)
 
-img_abstract_sentence <- magick::image_read(here::here("figs", "abstract-selfassessment-example.PNG"))
-
-p_abstract_sentence <- magick::image_ggplot(img_abstract_sentence)
-
-
-(p1 + p_abstract_sentence + p5) / (p2 + p3 + p4)
+(p1 + patchwork::plot_spacer() + p5) / (p2 + p3 + p4)
 
 ggsave(here::here("figs", "fig08_geotech_selfassessment.png"), width = 8, height = 7, dpi = 300)
 
 ```
 
-The distribution of the reproducibility levels by criteria contrasts notably with the results obtained for the evaluation of the AGILE/GIScience papers Surprisingly, all the criteria achieve level `3`, the highest (ideal) reproducibility level. `NA` level count (1 per criterion) corresponds to the student who answered the questionnaire but did not do the self-assessment. So, NA's are not relevant for the analysis; none of the students who _did_ the self-assessment assigned NA values to the criteria. Indeed, the lowest score for any criteria was `1` which sets the bar quite high. Without a reproducibility check by a third person, these self-assessment values seem to be quite inflated, well above the standards level we found in academic publications. This can be interpreted at least in tow ways. First, master theses were of outstanding quality with regards reproducibility (_really?_). Second, or the most credible interpretation, students did not understand well the reproducibility levels and criteria and failed to do an objective self-evaluation.
+The distribution of the reproducibility levels by criteria contrasts notably with the results obtained for the evaluation of the AGILE/GIScience papers [@nust2018]. Surprisingly, all the criteria achieve level `3`, the highest (ideal) reproducibility level. `NA` level count (1 per criterion) corresponds to the student who answered the questionnaire but did not do the self-assessment. So, NA's are not relevant for the analysis; none of the students who _did_ the self-assessment assigned NA values to the criteria. Indeed, the lowest score for any criteria was `1` which sets the bar quite high. Without a reproducibility check by a third person, these self-assessment values seem to be quite inflated, well above the standards level we found in academic publications. This can be interpreted at least in two ways. Or master theses were of outstanding quality with regards reproducibility; or, the most credible interpretation, students did not understand well the reproducibility levels and criteria and failed to do an objective self-evaluation.
 
 
 
@@ -831,7 +833,7 @@ THIS IS THE ANALISIS OF THE STUDENTS IN THE MSc GEOMATICS
 
 ## MSc Geomatics (TU Delft) 
 
-```{r}
+```{r master_title_geomatics}
 master_programme <- "MSc Geomatics"
 ```
 
@@ -849,7 +851,7 @@ geomatics_n_trained <- nrow(geomatics_pretest %>% filter(`Have you ever been TRA
 
 ```
 
-- `r geomatics_total_students` students of the MSc Geomatics _did_ eventually deliver the master thesis project.
+- `r geomatics_total_students` students _did_ eventually deliver the master thesis project.
 
 - `r round((geomatics_n_participants / geomatics_total_students)*100, 0)`% (`r geomatics_n_participants `/`r geomatics_total_students`) of students answered the first questionnaire.
 
@@ -871,7 +873,7 @@ summaries <-
   select(school, Item, low, neutral, high, mean, sd)
 ```
 
-__Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?__
+_Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?_
 
 ```{r pretest_geomatics_terms_table}
 kable(summaries,
@@ -891,10 +893,21 @@ Table above is the raw data to create the likert-scale plot in next Figure.
 
 
 ```{r pretest_geomatics_terms_fig, fig.width=15, fig.height=14, dpi=300}
-plot(results, type="bar", legend = "", legend.position = "bottom",
-     low.color = "goldenrod2", high.color="indianred4") +
-  ggtitle(paste0("How well do you KNOW these terms? (N=", geomatics_n_participants, ")")) + 
-  theme_bw()
+plot(results, type="bar", legend = "", legend.position="bottom",
+     centered=TRUE, text.size=4,
+     low.color = "indianred4", high.color="goldenrod2") +
+  labs(title = "How well do you KNOW these terms?",
+       subtitle = paste0(master_programme, " (N=", geomatics_n_participants, ")"),
+       caption = "Data: Questionnaire #1 (pre-test)") +
+  guides(fill=guide_legend(nrow=3, byrow=TRUE)) +
+  # theme_bw()
+  theme_wsj(base_size = 12) + 
+  theme(plot.title = element_text(size=20), 
+        plot.subtitle = element_text(size=16), 
+        plot.caption = element_text(size=10))
+
+
+ggsave(here::here("figs", "fig09_geomatics_pretest.png"), width = 14, height = 10, dpi = 300)
 
 ```
 
@@ -933,9 +946,9 @@ kable(geomatics_pretest %>%
 The plots below refer to the questions above wih numeric/logical answers.
 
 ```{r pretest_geomatics_perception_fig, fig.width=10}
-categoryColumns <- c("Have you ever experienced DIFFICULTIES \nIN REUSING somebody else’s code / data?",
-                     "Have you ever had to REUSE \nYOUR OWN past code/data?",
-                     "Please rate the perceived IMPORTANCE of \ndoing your research in a reproducible way")
+categoryColumns <- c("Have you ever experienced \nDIFFICULTIES IN REUSING \nsomebody else’s code / data?",
+                     "Have you ever had to\n REUSE YOUR OWN \npast code/data?",
+                     "Please rate the perceived\n IMPORTANCE of doing your \nresearch in a reproducible way")
 
 n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
 colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
@@ -963,7 +976,7 @@ p3 <- questions_barplot(
 
 p1 + p2 + p3 
 
-ggsave(file = here::here("figs", "fig10_geomatica_pretest.png"),
+ggsave(file = here::here("figs", "fig10_geomatics_pretest.png"),
        width = 10, height = 7, dpi = 300)
 
 
@@ -1015,9 +1028,13 @@ ggplot(working_practices, aes(x=forcats::fct_infreq(practice))) +
          y = "Working practices") +
     facet_grid(rows = vars(practice_group), scales = "free_y") +
     guides(fill= FALSE) +
-    theme_bw() +
     scale_fill_brewer(palette="Set1") +
-    scale_y_continuous(breaks = seq(0, max_bar, by=2))
+    scale_y_continuous(breaks = seq(0, max_bar, by=2)) +
+    # theme_bw()
+    theme_wsj(base_size = 12) + theme(plot.title = element_text(size=16))
+
+ggsave(here::here("figs", "fig10_geomatics_pretest.png"), width = 15, height = 10, dpi = 300)
+
 
 ```
 
@@ -1051,7 +1068,7 @@ geomatics_n_participants_post <- nrow(geomatics_postest)
 
 ```
 
-- `r round((geomatics_n_participants_post / geomatics_total_students)*100, 0)`% (`r geomatics_n_participants_post `/`r geomatics_total_students`) of students answered the second questionnaire.
+`r round((geomatics_n_participants_post / geomatics_total_students)*100, 0)`% (`r geomatics_n_participants_post `/`r geomatics_total_students`) of students answered the second questionnaire.
 
 
 #### Section 1: Previous knowledge/experience on reproducible research
@@ -1070,7 +1087,7 @@ summaries <-
   select(school, Item, low, neutral, high, mean, sd)
 ```
 
-__Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?__
+_Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?_
 
 ```{r postest_geomatics_terms_table}
 kable(summaries,
@@ -1091,13 +1108,24 @@ Table above is the raw data to create the likert-scale plot in next Figure.
 
 ```{r postest_geomatics_terms_fig, fig.width=15, fig.height=14, dpi=300}
 plot(results, type="bar", legend = "", legend.position = "bottom",
-     low.color = "goldenrod2", high.color="indianred4") +
-  ggtitle(paste0("How well do you KNOW these terms? (N=", geotech_n_participants_post, ")")) + 
-  theme_bw()
+     centered=TRUE, text.size=4, 
+     low.color = "indianred4", high.color="goldenrod2") +
+  labs(title = "How well do you KNOW these terms?",
+       subtitle = paste0(master_programme, " (N=", geomatics_n_participants_post, ")"),
+       caption = "Data: Questionnaire #2 (post-test)") +
+  guides(fill=guide_legend(nrow=3, byrow=TRUE)) +
+  # theme_bw()
+  theme_wsj(base_size = 12) + 
+  theme(plot.title = element_text(size=20), 
+        plot.subtitle = element_text(size=16), 
+        plot.caption = element_text(size=10))
+
+ggsave(here::here("figs", "fig11_geomatics_postest.png"), width = 14, height = 10, dpi = 300)
+
 
 ```
 
-__Have you read/watched the available materials (slides, videos, additional papers,etc)?__
+_Have you read/watched the available materials (slides, videos, additional papers,etc)?_
 
 
 ```{r postest_geomatics_materials}
@@ -1110,8 +1138,8 @@ geomatics_postest <-
 ```
 
 
-```{r postest_geomatics_materials_fig, fig.width=10}
-categoryColumns <- c("Have you read/watched the available materials \n(slides, videos, additional papers,etc)?")
+```{r postest_geomatics_materials_fig, fig.width=5, fig.height=4, fig.align='center'}
+categoryColumns <- c("Have you read/watched \nthe available materials \n(slides, videos, additional papers,etc)?")
 
 n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
 colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
@@ -1126,8 +1154,8 @@ p1 <- questions_barplot(
 
 p1
 
-ggsave(file = here::here("figs", "fig11_geomatica_postest.png"),
-       width = 10, height = 7, dpi = 300)
+ggsave(file = here::here("figs", "fig12_geomatics_postest.png"),
+       width = 5, height = 4, dpi = 300)
 
 ```
 
@@ -1171,34 +1199,89 @@ categoryColumns <- c("Are you going to use/adapt reproducible research \npractic
 n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
 colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
 
-# questionsBarplot = function(data, main, colour, levels) {
-#   barplot(table(data, useNA = "no"), 
-#           main = main,
-#           xlab = "Level", 
-#           ylim = c(0,6),
-#           names.arg = levels,col = colours[colour])
-# }
 
-par(mfrow = c(1,length(categoryColumns)))
+p1 <- questions_barplot(
+  geomatics_postest, 
+  `Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`, 
+  main = paste("A:", categoryColumns[1]), 
+  colour = 1, 
+  adapt_levels)
 
-# FIXME: Level names are long and are not correctly visualised (Plot A)
-# questionsBarplot(geomatics_postest$`Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`,
-#                 main = paste("A:", categoryColumns[1]), colour = 1, adapt_levels)
-# questionsBarplot(geomatics_postest$`Are you planning to learn more about reproducible research on your own?`,
-#                 main = paste("B:", categoryColumns[2]), colour = 2, percepcion_levels)
-# questionsBarplot(geomatics_postest$`How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`,
-#                 main = paste("C:", categoryColumns[3]), colour = 3, percepcion_levels)
+p2 <- questions_barplot(
+  geomatics_postest, 
+  `Are you planning to learn more about reproducible research on your own?`, 
+  main = paste("B:", categoryColumns[2]), 
+  colour = 2, 
+  percepcion_levels)
+
+p3 <- questions_barplot(
+  geomatics_postest, 
+  `How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`, 
+  main = paste("C:", categoryColumns[3]), 
+  colour = 3, 
+  percepcion_levels)
+  
+p1 + p2 + p3 
+
+ggsave(file = here::here("figs", "fig13_geomatics_postest.png"),
+       width = 12, height = 6, dpi = 300)
+
+```
+
+### Side-by-side comparison
+
+```{r both_geomatics_stats}
+
+geomatics_pretest %>%
+  select(pull(terms, column)) %>%
+  add_column(survey_id = "pretest") -> geomatics_1
+
+geomatics_postest %>%
+  select(pull(terms, column)) %>%
+  add_column(survey_id = "postest") -> geomatics_2
 
 
-
+geomatics_all <- bind_rows(geomatics_1, geomatics_2)
 
 ```
 
 
+
+```{r both_geomatics_terms, warning=FALSE}
+geomatics_all %>%
+  select(-survey_id) %>%
+  as.data.frame() %>%
+  likert(grouping = geomatics_all$survey_id) -> results_survey
+
+```
+
+_Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?_
+
+```{r both_geomatics_terms_fig, fig.width=14, fig.height=18, dpi=300}
+plot(results_survey, type="bar", legend = "", legend.position = "bottom",
+     centered=TRUE, text.size=4, 
+     low.color = "indianred4", high.color="goldenrod2",
+     group.order = c("pretest", "postest")) +
+  labs(title = "How well do you KNOW these terms (before vs after)?",
+       subtitle = paste0(master_programme, " (N=", nrow(geomatics_all), ")"),
+       caption = "Data: Questionnaires #1 + #2 (pre-test + post-test)") +
+  guides(fill=guide_legend(nrow=3, byrow=TRUE)) +
+  # theme_bw()
+  theme_wsj(base_size = 12) + 
+  theme(plot.title = element_text(size=20), 
+        plot.subtitle = element_text(size=16), 
+        plot.caption = element_text(size=10))  
+
+ggsave(here::here("figs", "fig14_geomatics_both.png"), width = 14, height = 18, dpi = 300)
+
+```
+
+It does not make sense to determine statistically change between pre-test and post-test likert questions because of the big difference between the number of responses per questionnaire: `r geomatics_n_participants` and `r geomatics_n_participants_post`, respectively. 
+
+
 ### Results of self-assessment reproducibility
 
-**TODO**
-
+As said previously, TU Delft students did not provide the self-assessment statement. Yet, some of them added a 1-page reflection to their thesis manuscripts. TODO: to be analyse
 
 
 # References {-}
