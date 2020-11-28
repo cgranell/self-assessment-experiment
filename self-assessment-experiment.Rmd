@@ -1,8 +1,12 @@
 ---
-title: "Reproducibility of GIScience MSc Theses - Self-assessment experiment"
+title: "Self-assessment Reproducibility of GIScience MSc Theses"
 author:
   - name: Carlos Granell
     affiliation: Universitat Jaume I of Castellón, Spain
+  - name: Rusen Sileryte
+    affiliation: Delft University of Technology, The Netherlands
+  - name: Daniel Nüst
+    affiliation: University of Münster, Germany
 date: "15/04/2020 (updated `r format(Sys.time(), '%d %B, %Y')`)"
 output:
   html_document: 
@@ -368,7 +372,7 @@ kable(summaries,
       kableExtra::scroll_box(height = "300px")
 ```
 
-Table above is the raw data to create the likert-scale plot in next Figure. Students had previous knowledge (reddish answers >= 50%) for the 9 top terms, which are `r summaries$Item[1:9]`. The next term, `r summaries$Item[10]`, is to some extent knowledgeable, as 1/3 opted for the neutral response. The rest of terms, `r summaries$Item[11: length(summaries$Item)]`, are in general poorly known and/or understood. This suggests that terms closely connected to reproducibility (mostly from the _pragmatic_ School of Thought, see [@fecher2014open]) were in general unknowledgeable (yellowish answers predominate). 
+Table above is the raw data to create the likert-scale plot in next Figure. Students had previous knowledge (yellowish answers >= 50%) for the 9 top terms, which are `r summaries$Item[1:9]`. The next term, `r summaries$Item[10]`, is to some extent knowledgeable, as 1/3 opted for the neutral response. The rest of terms, `r summaries$Item[11: length(summaries$Item)]`, are in general poorly known and/or understood. This suggests that terms closely connected to reproducibility (mostly from the _pragmatic_ School of Thought, see [@fecher2014open]) were in general unknowledgeable (reddish answers predominate). 
 
 
 
