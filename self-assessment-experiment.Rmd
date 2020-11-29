@@ -3,7 +3,7 @@ title: "Self-assessment Reproducibility of GIScience MSc Theses"
 author:
   - name: Carlos Granell
     affiliation: Universitat Jaume I of Castellón, Spain
-  - name: Rusen Sileryte
+  - name: Rusne Sileryte
     affiliation: Delft University of Technology, The Netherlands
   - name: Daniel Nüst
     affiliation: University of Münster, Germany
@@ -46,16 +46,18 @@ source("install.R")
 ## Required libraries
 
 ```{r load_libraries, echo=TRUE, message=FALSE, warning=FALSE}
-library("tidyverse")
-library("forcats")
-library("kableExtra")
-library("here")
-library("stringr")
-library("googlesheets4")
-library("likert")
-library("magick")
-library("patchwork")
-library("ggthemes")
+library(tidyverse)
+library(forcats)
+library(kableExtra)
+library(here)
+library(stringr)
+library(googlesheets4)
+library(likert)
+library(magick)
+library(patchwork)
+library(ggthemes)
+library(scales)
+library(gridExtra)
 ```
 
 ```{r load_functions, message=FALSE, warning=FALSE}
@@ -218,13 +220,13 @@ The following plots and tables are based on the files `r pretest_filtered_filena
 category_levels <- c("0", "1", "2", "3")
 
 cols(
-   .default = col_character(),
-   input_data = col_factor(levels = category_levels),
-   preprocessing = col_factor(levels = category_levels),
-   methods = col_factor(levels = category_levels),
-   computational_environment = col_factor(levels = category_levels),
-   results = col_factor(levels = category_levels),
-   self_assessment = col_logical()
+   .default = readr::col_character(),
+   input_data = readr::col_factor(levels = category_levels),
+   preprocessing = readr::col_factor(levels = category_levels),
+   methods = readr::col_factor(levels = category_levels),
+   computational_environment = readr::col_factor(levels = category_levels),
+   results = readr::col_factor(levels = category_levels),
+   self_assessment = readr::col_logical()
 ) -> export_cols
 
 pretest_data <- read_csv(
@@ -254,12 +256,12 @@ names(postest_data) <- names(postest_data) %>%
 
 
 cols(
-   input_data = col_factor(levels = category_levels),
-   preprocessing = col_factor(levels = category_levels),
-   methods = col_factor(levels = category_levels),
-   computational_environment = col_factor(levels = category_levels),
-   results = col_factor(levels = category_levels),
-   self_assessment = col_logical()
+   input_data = readr::col_factor(levels = category_levels),
+   preprocessing = readr::col_factor(levels = category_levels),
+   methods = readr::col_factor(levels = category_levels),
+   computational_environment = readr::col_factor(levels = category_levels),
+   results = readr::col_factor(levels = category_levels),
+   self_assessment = readr::col_logical()
 ) -> export_cols
 
 
@@ -437,24 +439,30 @@ categoryColumns <- c("Have you ever experienced \nDIFFICULTIES IN REUSING \nsome
 n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
 colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
 
-fig_barplot <- patchwork::wrap_plots(
-  ncol = length(categoryColumns),
-  questions_barplot(geotech_pretest, 
-                    `Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`, 
-                    main = paste("A:", categoryColumns[1]), 
-                    colour = 1, 
-                    yesno_levels),
-  questions_barplot(geotech_pretest, 
-                    `Have you ever had to REUSE YOUR OWN past code/data?`, 
-                    main = paste("B:", categoryColumns[2]), 
-                    colour = 2, 
-                    yesno_levels),
-  questions_barplot(geotech_pretest, 
-                    `Please rate the perceived IMPORTANCE of doing your research in a reproducible way`, 
-                    main = paste("C:", categoryColumns[3]), 
-                    colour = 3, 
-                    percepcion_levels)
-  )
+p1 <- questions_barplot(geotech_pretest, 
+                        `Have you ever experienced DIFFICULTIES IN REUSING somebody else’s code / data?`, 
+                        main = categoryColumns[1], 
+                        colour = 1, 
+                        yesno_levels)
+
+p2 <- questions_barplot(geotech_pretest, 
+                        `Have you ever had to REUSE YOUR OWN past code/data?`, 
+                        main = categoryColumns[2], 
+                        colour = 2, 
+                        yesno_levels)
+
+p3 <- questions_barplot(geotech_pretest, 
+                        `Please rate the perceived IMPORTANCE of doing your research in a reproducible way`, 
+                        main = categoryColumns[3], 
+                        colour = 3, 
+                        levels = percepcion_levels)
+
+fig_barplot <- 
+  p1 + p2 + p3 + plot_annotation(
+    subtitle = paste0(master_programme, " (N=", geotech_n_participants, ")"),
+    caption = "Data: Questionnaire #1 (pre-test)") + 
+  plot_annotation(tag_levels = 'A') &  
+  theme(plot.tag = element_text(size = 8))
 
 fig_barplot
 
@@ -508,6 +516,8 @@ ggplot(working_practices, aes(x=forcats::fct_infreq(practice))) +
     geom_bar(aes(fill=factor(practice_group))) +
     coord_flip() +
     labs(title = "What tools do you plan to use to...?",
+         subtitle = paste0(master_programme, " (N=", geotech_n_participants, ")"),
+         caption = "Data: Questionnaire #1 (pre-test)",
          x = "Number of responses",
          y = "Working practices") +
     facet_grid(rows = vars(practice_group), scales = "free_y") +
@@ -515,7 +525,11 @@ ggplot(working_practices, aes(x=forcats::fct_infreq(practice))) +
     scale_fill_brewer(palette="Set1") +
     scale_y_continuous(breaks = seq(0, max_bar, by=2)) +
     # theme_bw()
-    theme_wsj(base_size = 12) + theme(plot.title = element_text(size=16))
+    theme_wsj(base_size = 12) + 
+    theme(plot.title = element_text(size=20),
+          plot.subtitle = element_text(size = 16),
+          plot.caption = element_text(size=10))
+
 
 ggsave(here::here("figs", "fig03_geotech_pretest.png"), width = 15, height = 10, dpi = 300)
 ```
@@ -630,11 +644,21 @@ categoryColumns <- c("Have you read/watched the available materials \n(slides, v
 n_colours <- ifelse(length(categoryColumns) > 2, length(categoryColumns), 3)
 colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
 
-fig_barplot <- questions_barplot(geotech_postest, 
-                    `Have you read/watched the available materials (slides, videos, additional papers,etc)?`, 
-                    main = paste("A:", categoryColumns[1]), 
-                    colour = 1, 
-                    material_levels)
+p1 <- questions_barplot(
+  geotech_postest, 
+  `Have you read/watched the available materials (slides, videos, additional papers,etc)?`, 
+  main = paste("A:", categoryColumns[1]), 
+  colour = 1, 
+  levels = material_levels,
+  wrap_labels = TRUE)
+
+
+fig_barplot <- 
+  p1 + plot_annotation(
+    subtitle = paste0(master_programme, " (N=", geotech_n_participants_post, ")"),
+    caption = "Data: Questionnaire #2 (post-test)") + 
+  plot_annotation(tag_levels = 'A') &  
+  theme(plot.tag = element_text(size = 8))
 
 fig_barplot
 
@@ -676,8 +700,8 @@ kable(geotech_postest %>%
 
 The plots below refer to the questions above.
 
-```{r postest_geotech_perception_fig, fig.width=12, fig.height=6}
-categoryColumns <- c("Are you going to use/adapt \nreproducible research practice(s) \nin your current and/or future \nresearch project?",
+```{r postest_geotech_perception_fig, fig.width=9, fig.height=10}
+categoryColumns <- c("Are you going to use/adapt reproducible research practice(s) in your current and/or future \nresearch project?",
                      "Are you planning to learn more \nabout reproducible research on your own?",
                      "How important are \nreproducibility practices for \nyour future professional career?")
 
@@ -687,28 +711,34 @@ colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
 p1 <- questions_barplot(
   geotech_postest, 
   `Are you going to use/adapt reproducible research practice(s) in your current and/or future research projects (master thesis, doctoral thesis, etc.)?`, 
-  main = paste("A:", categoryColumns[1]), 
+  main = categoryColumns[1], 
   colour = 1, 
-  adapt_levels)
+  levels = adapt_levels,
+  wrap_labels = TRUE)
 
 p2 <- questions_barplot(
   geotech_postest, 
   `Are you planning to learn more about reproducible research on your own?`, 
-  main = paste("B:", categoryColumns[2]), 
+  main = categoryColumns[2], 
   colour = 2, 
-  percepcion_levels)
+  levels =  percepcion_levels)
 
 p3 <- questions_barplot(
   geotech_postest, 
   `How important are reproducibility practices for your future professional career (academia, industry, government, etc.)?`, 
-  main = paste("C:", categoryColumns[3]), 
+  main = categoryColumns[3], 
   colour = 3, 
-  percepcion_levels)
+  levels = percepcion_levels)
   
-p1 + p2 + p3 
+p1 / (p2 + p3) + 
+  plot_annotation(
+    subtitle = paste0(master_programme, " (N=", geotech_n_participants_post, ")"),
+    caption = "Data: Questionnaire #2 (post-test)") + 
+  plot_annotation(tag_levels = 'A') &  
+  theme(plot.tag = element_text(size = 8))
 
 ggsave(file = here::here("figs", "fig06_geotech_postest.png"),
-       width = 12, height = 6, dpi = 300)
+       width = 9, height = 10, dpi = 300)
 
 
 ```
@@ -719,11 +749,11 @@ ggsave(file = here::here("figs", "fig06_geotech_postest.png"),
 
 geotech_pretest %>%
   select(pull(terms, column)) %>%
-  add_column(survey_id = "pretest") -> geotech_1
+  add_column(survey_id = "Pre-test") -> geotech_1
 
 geotech_postest %>%
   select(pull(terms, column)) %>%
-  add_column(survey_id = "postest") -> geotech_2
+  add_column(survey_id = "Post-test") -> geotech_2
 
 
 geotech_all <- bind_rows(geotech_1, geotech_2)
@@ -736,18 +766,18 @@ geotech_all <- bind_rows(geotech_1, geotech_2)
 geotech_all %>%
   select(-survey_id) %>%
   as.data.frame() %>%
-  likert(grouping = geotech_all$survey_id) -> results_survey
+  likert(grouping = geotech_all$survey_id) -> results_comparison
 
 ```
 
 _Imagine that you are going to explain the following terms to somebody else. How well do you KNOW them?_
 
 ```{r both_geotech_terms_fig, fig.width=14, fig.height=18, dpi=300}
-plot(results_survey, type="bar", legend = "", legend.position = "bottom",
+plot(results_comparison, type="bar", legend = "", legend.position = "bottom",
      centered=TRUE, text.size=4, 
      low.color = "indianred4", high.color="goldenrod2",
-     group.order = c("pretest", "postest")) +
-  labs(title = "How well do you KNOW these terms (before vs after)?",
+     group.order = c("Pre-test", "Post-test")) +
+  labs(title = "How well do you KNOW these terms (pre-test vs post-test)?",
        subtitle = paste0(master_programme, " (N=", nrow(geotech_all), ")"),
        caption = "Data: Questionnaires #1 + #2 (pre-test + post-test)") +
   guides(fill=guide_legend(nrow=3, byrow=TRUE)) +
@@ -755,9 +785,10 @@ plot(results_survey, type="bar", legend = "", legend.position = "bottom",
   theme_wsj(base_size = 12) + 
   theme(plot.title = element_text(size=20), 
         plot.subtitle = element_text(size=16), 
-        plot.caption = element_text(size=10))  
+        plot.caption = element_text(size=10)) +
+  theme(strip.text=element_text(size=14)) 
 
-ggsave(here::here("figs", "fig07_geotech_both.png"), width = 14, height = 18, dpi = 300)
+ggsave(here::here("figs", "fig07_geotech_both.png"), width = 12, height = 18, dpi = 300)
 
 ```
 
@@ -772,7 +803,7 @@ knitr::include_graphics(here::here("figs", "abstract-selfassessment-example.PNG"
 
 
 
-```{r selfassessment_fig, fig.width=10, fig.height=8}
+```{r selfassessment_fig, fig.width=10, fig.height=8, message=FALSE, warning=FALSE}
 # match the colours to time series plot below
 categoryColumns <- c("input_data", 
                      "preprocessing",
@@ -787,41 +818,81 @@ colours <- RColorBrewer::brewer.pal(n_colours, "Set1")
 p1 <- criteria_barplot(
   geotech_pretest,
   `input_data`,
-  main = "A: Input data",
+  main = "Input data",
   colour = 1)
 
 p2 <- criteria_barplot(
   geotech_pretest,
   `preprocessing`,
-  main = "B: Preprocessing",
+  main = "Preprocessing",
   colour = 2)
 
 p3 <- criteria_barplot(
   geotech_pretest,
   `methods`,
-  main = "C: Methods/Analysis/\nProcessing",
+  main = "Methods/Analysis/\nProcessing",
   colour = 3)
 
 p4 <- criteria_barplot(
   geotech_pretest,
   `computational_environment`,
-  main = "D: Computational\nEnvironment",
+  main = "Computational\nEnvironment",
   colour = 4)
 
 p5 <- criteria_barplot(
   geotech_pretest,
   `results`,
-  main = "E: Results",
+  main = "Results",
   colour = 5)
+
+# Table of means per reproducibility criterion
+geotech_selfassess_numeric <- 
+  geotech_pretest %>%
+  dplyr::select(all_of(categoryColumns)) %>%
+  drop_na() %>%
+  # must convert factors to numbers to calculate the mean 
+  dplyr::mutate_if(is.factor, list(~ as.integer(as.character(.))))
+
+means <- lapply(
+  geotech_selfassess_numeric %>%
+    select(categoryColumns),
+  summary) %>%
+  lapply(`[[`, "Mean")
+
+
+tab <- 
+  as_tibble(means) %>%
+  select(
+    `Input data` = input_data,
+    `Preprocessing` = preprocessing,
+    `Methods/Analysis/Processing`= methods,
+    `Computational environment` = computational_environment,
+    `Results` = results) %>% 
+  pivot_longer(everything(), names_to = "criterion", values_to = "mean") %>%
+  transmute(
+    Criterion = criterion,
+    Mean = scales::number(mean, 0.1)) %>%
+  gridExtra::tableGrob(theme = ttheme_minimal(), rows = NULL)
+
+ # grid.arrange(tab)
+
 
 # if you want to add an image to the blank space between plots...
 # img_abstract_sentence <- magick::image_read(here::here("figs", "abstract-selfassessment-example.PNG"))
 # p_abstract_sentence <- magick::image_ggplot(img_abstract_sentence)
 # (p1 + p_abstract_sentence + p5) / (p2 + p3 + p4)
 
-(p1 + patchwork::plot_spacer() + p5) / (p2 + p3 + p4)
 
-ggsave(here::here("figs", "fig08_geotech_selfassessment.png"), width = 8, height = 7, dpi = 300)
+(p1 + tab + p5) / (p2 + p3 + p4) +
+  plot_annotation(
+    title = "Self-assessment reproducibility per criterion & Criteria means",
+    subtitle = paste0(master_programme, " (N=", geotech_n_participants, ")"),
+    caption = "Data: Self-assessment reproducibility") + 
+  plot_annotation(tag_levels = 'A') &  
+  theme(plot.tag = element_text(size = 8))
+
+
+ggsave(here::here("figs", "fig08_geotech_selfassessment.png"), width = 10, height = 7, dpi = 300)
 
 ```
 

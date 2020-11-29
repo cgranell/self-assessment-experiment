@@ -1,6 +1,7 @@
 
 
-questions_barplot = function(data, column, main, colour, levels, flip = FALSE) {
+questions_barplot = function(data, column, main, colour, levels, 
+                             subtitle = "", caption = "", wrap_labels = FALSE) {
   col <- enquo(column)
   n <- data %>% select(!!col) %>% summarise(n=n()) %>% .$n
   if (n<=3) {n<-4}
@@ -9,15 +10,16 @@ questions_barplot = function(data, column, main, colour, levels, flip = FALSE) {
     ggplot2::ggplot(aes(!!col), 
                     show.legend = FALSE) +
     ggplot2::geom_bar(fill = colours[colour], color = "black") +
-    ggplot2::ggtitle(main) +
-    ggplot2::scale_x_discrete(name = "Level", 
-                              labels = stringr::str_wrap(levels, width = 10)) +
+    ggplot2::labs(title = main, subtitle = subtitle, caption = caption) +
     ggplot2::scale_y_continuous(name = "",
                                 breaks = breaks,
                                 limits = range(breaks)) -> p
   
-  if (flip) {
-    p <- p + ggplot2::coord_flip()
+  if (wrap_labels) {
+    p <- p + ggplot2::scale_x_discrete(name = "Level",
+                                       labels = stringr::str_wrap(levels, width = 20))
+  } else {
+    p <- p + ggplot2::scale_x_discrete(name = "Level")
   }
   
   # theme_tufte(base_size = 12) + theme(axis.ticks.x = element_blank())
