@@ -1356,7 +1356,17 @@ It does not make sense to determine statistically change between pre-test and po
 
 ### Results of self-assessment reproducibility
 
-As said previously, TU Delft students did not provide the self-assessment statement. Yet, some of them added a 1-page reflection to their thesis manuscripts. TODO: to be analyse
+As said previously, TU Delft students did not provide the self-assessment statement. Yet, some of them added a 1-page reflection to their thesis manuscripts. TODO: to be commented
+
+
+# Concluding remarks
+
+- Observed an awareness of reproducibility in all theses that included the self-assessment.
+- Meta-assessment: students’ self-assessment was generally too optimistic.
+- Can self-study & self-assessment influence the degree of reproducibility?
+- Turn into a long-term study on the impact of MSc-level exposure to reproducibility? 
+- [New requirements on MSc Geomatics](https://3d.bk.tudelft.nl/courses/geo2020/openscience/)
+
 
 
 # References {-}
