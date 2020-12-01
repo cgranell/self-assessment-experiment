@@ -193,7 +193,38 @@ The list of questions of each questionnaire were discussed and agreed in a [shar
 1. Knowledge/experience acquired on reproducible research compared to what was stated in questionnaire #1, and
 2. Perceived importance of reproducibility in their future careers.
 
-Section 1 in both questionnaires is pretty much the same, as the list of 15 terms are asked at the start and end of the semester.
+Section 1 in both questionnaires share a list of 18 terms related to open science [@fecher2014open]. We omitted the **Measurement** School in the questionnaires.
+
+```{r terms_table}
+
+# Terms organised according to the five "schools of thoughts"
+# cher & Friesike (2014). Open Science: One Term, Five Schools of Thought. https://doi.org/10.1007/978-3-319-00026-8_2
+schools_of_thought <- tibble(
+  school = c(rep("Democratic", 6), 
+             rep("Pragmatic", 5), 
+             rep("Infrastructure", 4), 
+             rep("Public", 3)),
+  desc = c(rep("Making knowledge freely available for everybody", 6), 
+           rep("Opening up the process of knowledge creation", 5), 
+           rep("Creating (and using) openly available platforms, tools, and services", 4), 
+           rep("Making science accessible for citizens", 3)),
+  term = c("Open Access", "Open Data", "Open Source", "Intellectual Property Rights", "Data/core Versioning", "Licence",
+             "Computational essays", "Digital notebooks", "Analytical workflows", "Execution environments", "Reproducible packages",
+             "Collaborative coding repositories", "Code repositories", "Data repositories", "Containers platforms",
+             "Citizen science", "Science blogging", "Science dissemination")
+)
+
+schools_of_thought %>%
+  kable(row.names = FALSE,
+      col.names = c("School of Thought", "Description", "Term"),
+      format = "html",
+      booktabs = TRUE) %>%
+      kableExtra::kable_styling(full_width = TRUE, bootstrap_options = c("condensed")) %>%
+      column_spec(1, bold = T) %>%
+      collapse_rows(columns = 1:2, valign = "top")
+```
+
+
 
 ## Training materials 
 
