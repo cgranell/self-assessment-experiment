@@ -1,5 +1,5 @@
 ---
-title: "Self-assessment Reproducibility of GIScience MSc Theses"
+title: "Reproducible Graduate Theses in GIScience"
 author:
   - name: Carlos Granell
     affiliation: Universitat Jaume I of Castellón, Spain
@@ -22,7 +22,7 @@ output:
   word_document:
     toc: yes
 abstract: |
-  As part of an iniciative to explore teaching strategies to increase the exposure to and understanding of reproducible research in the area of GIScience, we conducted an intervention with students enrolled in two GIS-related master's programmes: [Erasmus Mundus MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/) during the academic year 2019/20. This notebook analyses participants' responses to two questionnaires (pre-test and post-test) on their previous knowledge of reproducible research concepts and practices, and the self-assessment exercise on the reproducibility level of the master's theses. Results were presented in the [Research Reproducibility 2020 conference](https://pwd.aa.ufl.edu/researchre-pro/) (see [@granell2020]).
+  As part of an [iniciative](https://osf.io/j97zp/) to explore teaching strategies to increase the exposure to and understanding of reproducible research in the area of GIScience, we conducted an intervention with students enrolled in two GIS-related master's programmes: [Erasmus Mundus MSc in Geospatial Technologies](https://mastergeotech.info/) and [MSc Geomatics](https://www.tudelft.nl/en/education/programmes/masters/geomatics/msc-geomatics/) during the academic year 2019/20. This notebook analyses participants' responses to two questionnaires (pre-test and post-test) on their previous knowledge of reproducible research concepts and practices, and the self-assessment exercise on the reproducibility level of the master's theses. An extended abstract was presented in the [Research Reproducibility 2020 conference](https://pwd.aa.ufl.edu/researchre-pro/) (see [@granell2020]).
   
 urlcolor: blue
 bibliography: references.bib
