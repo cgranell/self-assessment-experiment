@@ -9,3 +9,6 @@ Carlos Granell, Rusne Sileryte, and Daniel Nüst. 2020. “[Reproducible Graduat
 
 
 <a href="https://reproducible-agile.github.io/"><img src="https://reproducible-agile.github.io/public/images/reproducible-AGILE-logo-square.svg" width="128px" align="center"/></a>
+
+
+*Note: This repo is disconnected. Future updates on [https://github.com/reproducible-agile/self-assessment-experiment](https://github.com/reproducible-agile/self-assessment-experiment)*
